@@ -1,0 +1,29 @@
+
+Instruction Set
+https://www.dsi.unive.it/~gasparetto/materials/MIPS_Instruction_Set.pdf
+https://inst.eecs.berkeley.edu/~cs61c/resources/MIPS_help.html
+
+Pseudo Instructions
+http://matthews.sites.truman.edu/files/2019/11/pseudoinstructions.pdf
+
+Control flow
+https://courses.cs.washington.edu/courses/cse378/09wi/lectures/lec03.pdf
+https://courses.cs.washington.edu/courses/cse378/09wi/lectures/lec04.pdf
+
+Functions
+https://courses.cs.washington.edu/courses/cse378/09wi/lectures/lec05.pdf
+
+Instruction format
+https://cours
+es.cs.washington.edu/courses/cse378/09wi/lectures/lec06.pdf
+
+MIPS Processor
+https://courses.cs.washington.edu/courses/cse378/09wi/lectures/lec07.pdf
+https://courses.cs.washington.edu/courses/cse378/09wi/lectures/lec08.pdf
+
+Cycles / Pipelining
+https://courses.cs.washington.edu/courses/cse378/09wi/lectures/lec09.pdf
+
+Registers
+
+http://homepage.divms.uiowa.edu/~ghosh/1-28-10.pdf
