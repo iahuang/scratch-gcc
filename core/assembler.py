@@ -8,6 +8,14 @@ class AssemblyMessage:
         self.message = message
         self.line = line
 
+class ITypeArgumentFormat:
+    """ See InstructionArgument.addITypeFormatInstruction() """
+    RS_RT_IMM = 0
+    RS_IMM = 1
+    RT_RS_IMM = 2
+    RT_IMM = 3
+    RT_RS_IMM_OFFSET = 4
+
 class InstructionArgument:
     """
     Class that represents an instruction argument
@@ -77,7 +85,7 @@ class InstructionArgument:
             labels = {}
             # matches a string of characters that starts with a letter or underscore and is not preceded by
             # a $ or %
-            for match in re.findall(r'(?<![$%])\b[a-zA-Z_](\w+)?', string=expr):
+            for match in re.findall(r'(?<![$%])\b[a-zA-Z_]\w{0,}', string=expr):
                 labels[match] = 0
 
         # replace the % operator prefix with two underscores (%hi -> __hi)
@@ -87,7 +95,7 @@ class InstructionArgument:
         def repl(matchObject: re.Match):
             boundary = matchObject.group()
             return boundary[0]+"+"+boundary[1]
-        expr = re.sub(r'[\w\)]\(', repl=repl, string=expr) # match boundaries between a symbol and an opening parentheses 
+        expr = re.sub(r'[\d\)]\(', repl=repl, string=expr) # match boundaries between a symbol and an opening parentheses 
 
         # replace $sp, $31, etc. with a getRegisterNumber expression
         def repl(matchObject: re.Match):
@@ -108,7 +116,7 @@ class InstructionArgument:
 
         for labelName, labelAddress in labels.items():
             globalScope[labelName] = labelAddress
-        
+
         evald = eval(expr, globalScope, {})
 
         if type(evald) == int:
@@ -221,44 +229,86 @@ class Assembly:
 
         # Use big endian so the order is correct idk man
         return struct.pack(">I", self._bitsToInt(args))
+    
+    def addITypeFormatInstruction(self, opcode, args, labels, argFormat):
+        """
+        argFormat:
+        0 - $rs $rt imm
+        1 - $rs imm
+        2 - $rt $rs imm
+        3 - $rt imm
+        4 - $rt imm($rs) 
+        """
+
+        rs = InstructionArgument(0)
+        rt = InstructionArgument(0)
+        imm = InstructionArgument(0)
+        
+        if argFormat == 0:
+            rs = InstructionArgument.evaluate(args[0], labels)
+            rt = InstructionArgument.evaluate(args[1], labels)
+            imm = InstructionArgument.evaluate(args[2], labels)
+        elif argFormat == 1:
+            rs = InstructionArgument.evaluate(args[0], labels)
+            imm = InstructionArgument.evaluate(args[1], labels)
+        elif argFormat == 2:
+            rt = InstructionArgument.evaluate(args[0], labels)
+            rs = InstructionArgument.evaluate(args[1], labels)
+            imm = InstructionArgument.evaluate(args[2], labels)
+        elif argFormat == 3:
+            rt = InstructionArgument.evaluate(args[0], labels)
+            imm = InstructionArgument.evaluate(args[1], labels)
+        elif argFormat == 4:
+            rt = InstructionArgument.evaluate(args[0], labels)
+            rs = InstructionArgument.evaluate(args[1], labels)
+            imm = InstructionArgument(rs.offset)
+
+        self.addBytesToCode(self.formatIType(
+            opcode,
+            rs.value,
+            rt.value,
+            imm.value
+        ))
 
     def onInstruction(self, instruction, args, isFirstPass):
         # Process pseudo-instructions
 
         if instruction == "nop":
             return self.onInstruction("sll", ["$zero", "$zero", "0"], isFirstPass)
-        
+
+        labels = None if isFirstPass else self.labels
+
         # Process actual instructions
         if instruction == "addiu":
-            labels = None if isFirstPass else self.labels
-            rt = InstructionArgument.evaluate(args[0], labels)
-            rs = InstructionArgument.evaluate(args[1], labels)
-            imm = InstructionArgument.evaluate(args[2], labels)
+            self.addITypeFormatInstruction(
+                opcode=0b001001,
+                args=args,
+                labels=labels,
+                argFormat=ITypeArgumentFormat.RT_RS_IMM
+            )
 
-            self.addBytesToCode(self.formatIType(
-                9,
-                rs.value,
-                rt.value,
-                imm.value
-            ))
         elif instruction == "sw":
-            labels = None if isFirstPass else self.labels
-            rt = InstructionArgument.evaluate(args[0], labels)
-            rs = InstructionArgument.evaluate(args[1], labels)
+            self.addITypeFormatInstruction(
+                opcode=0b101011,
+                args=args,
+                labels=labels,
+                argFormat=ITypeArgumentFormat.RT_RS_IMM_OFFSET
+            )
 
-            self.addBytesToCode(self.formatIType(
-                43,
-                rs.value,
-                rt.value,
-                rs.offset
-            ))
-
-        elif instruction == "move":
-            pass
+        elif instruction == "lw":
+            self.addITypeFormatInstruction(
+                opcode=0b100011,
+                args=args,
+                labels=labels,
+                argFormat=ITypeArgumentFormat.RT_RS_IMM_OFFSET
+            )
         elif instruction == "lui":
-            pass
-        elif instruction == "jr":
-            pass
+            self.addITypeFormatInstruction(
+                opcode=0b001111,
+                args=args,
+                labels=labels,
+                argFormat=ITypeArgumentFormat.RT_IMM
+            )
         else:
             self.createError('Unknown instruction "{}"'.format(instruction))
     
