@@ -10,20 +10,37 @@ class AssemblyMessage:
 
 class InstructionArgument:
     """
-    Parsing class for instruction arguments
+    Class that represents an instruction argument
 
-    These are all valid arguments:
+    These are all examples of arguments:
         %hi(a)      # hi value of address of label a
         %lo(a)($2)  # r2 offset by lo value of address of label a
         4($sp)      # stack ptr offset by 4
         $sp         # register 29
         -8          # constant integer -8
     
-    """
-    def __init__(self, expr):
-        self.expr = expr
+    For an argument like 4($sp), the corresponding InstructionArgument returned by InstructionArgument.evaluate()
+    would be:
     
-    def getRegisterNumber(self, registerName):
+        value: 29 # register number of the stack pointer
+        offset: 4
+
+    Not all arguments will have a corresponding offset
+
+    """
+    def __init__(self, value):
+        self.value = value
+        self.offset = None
+    
+    def __radd__(self, offset):
+        self.offset = offset
+        return self
+    
+    def __repr__(self):
+        return f"<Argument value={self.value} offset={self.offset}>"
+    
+    @staticmethod
+    def getRegisterNumber(registerName):
         """ Find the register number (0-31) from a mnemonic register name like "$fp" """
 
         assert registerName[0] == "$", Exception("Register name must start with $")
@@ -42,19 +59,29 @@ class InstructionArgument:
         else:
             return int(registerName)
     
-    def evaluate(self, labels):
+    @staticmethod
+    def evaluate(expr, labels=None):
         """ Evaluate the integer value of this argument.
-        Requires a [labels] argument in case this instruction argument references a label """
+        Requires a [labels] argument in case this instruction argument references a label.
+        If this is the first pass, and we don't know the labels yet, set this to None.
+        A placeholder label with at address 0 will be used instead """
 
         # to evaluate these expressions, we're going to use eval(), since i dont feel like writing a parser
         # to mitigate security risks, we're going to restrict use of builtins and the global scope
 
         # per https://realpython.com/python-eval-function, panic if the name __class__ is used
-        if "__class__" in self.expr:
+        if "__class__" in expr:
             raise Exception("Name in expression not allowed")
-            
-        # replace the % operator prefix with an underscore (%hi -> _hi)
-        expr = self.expr.replace("%", "_") 
+
+        if not labels: # if we don't know any of the labels yet we're going to have to find them manually
+            labels = {}
+            # matches a string of characters that starts with a letter or underscore and is not preceded by
+            # a $ or %
+            for match in re.findall(r'(?<![$%])\b[a-zA-Z_](\w+)?', string=expr):
+                labels[match] = 0
+
+        # replace the % operator prefix with two underscores (%hi -> __hi)
+        expr = expr.replace("%", "__") 
 
         # replace instances of stuff like, 4($sp) with 4+($sp)
         def repl(matchObject: re.Match):
@@ -65,16 +92,28 @@ class InstructionArgument:
         # replace $sp, $31, etc. with a getRegisterNumber expression
         def repl(matchObject: re.Match):
             registerName = matchObject.group()
-            return 'reg("{}")'.format(registerName)
+            return '__reg("{}")'.format(registerName)
 
         expr = re.sub(r'\$\w+', repl=repl, string=expr)
-        print(expr)
 
-        # build global scope with relevant operator definitions
+        # build global scope with relevant operator definitions and variables
         globalScope = {
             "__builtins__": {}, # used to prevent security risks
-            "reg": lambda r: self.getRegisterNumber(r)
+            "__reg": lambda r: InstructionArgument(InstructionArgument.getRegisterNumber(r)),
+            "__lo": lambda n: (n<<16)>>16,  # find low 16 bits of word
+            "__hi": lambda n: (n>>16)       # find high 16 bits of word
         }
+
+        # insert label definitions into global scope
+
+        for labelName, labelAddress in labels.items():
+            globalScope[labelName] = labelAddress
+        
+        evald = eval(expr, globalScope, {})
+
+        if type(evald) == int:
+            return InstructionArgument(evald)
+        return evald
 
 class Assembly:
     def __init__(self):
@@ -183,60 +222,35 @@ class Assembly:
         # Use big endian so the order is correct idk man
         return struct.pack(">I", self._bitsToInt(args))
 
-    def getRegisterNumber(self, registerName):
-        """ Find the register number (0-31) from a mnemonic register name like "$fp" """
-
-        assert registerName[0] == "$", Exception("Register name must start with $")
-        registerName = registerName[1:]
-
-        names = {
-            "zero": 0,
-            "gp": 28,
-            "sp": 29,
-            "fp": 30,
-            "ra": 31
-        }
-
-        if registerName in names:
-            return names[registerName]
-        else:
-            return int(registerName)
-
-    def onInstruction(self, instruction, args):
+    def onInstruction(self, instruction, args, isFirstPass):
         # Process pseudo-instructions
 
         if instruction == "nop":
-            return self.onInstruction("sll", ["$zero", "$zero", "0"])
+            return self.onInstruction("sll", ["$zero", "$zero", "0"], isFirstPass)
         
         # Process actual instructions
         if instruction == "addiu":
-            rt = args[0]
-            rs = args[1]
-            imm = int(args[2])
+            labels = None if isFirstPass else self.labels
+            rt = InstructionArgument.evaluate(args[0], labels)
+            rs = InstructionArgument.evaluate(args[1], labels)
+            imm = InstructionArgument.evaluate(args[2], labels)
 
             self.addBytesToCode(self.formatIType(
                 9,
-                self.getRegisterNumber(rs),
-                self.getRegisterNumber(rt),
-                imm
+                rs.value,
+                rt.value,
+                imm.value
             ))
         elif instruction == "sw":
-            rt = InstructionArgument(args[0]).evaluate({})
-            rt = InstructionArgument(args[1]).evaluate({})
-
-            rt = args[0]
-            
-            # parse out offset and register from args[1] which will look something like 8($sp)
-            rs = re.findall(r'\(.+?\)', args[1])[0]
-            rs = rs[1:-1] # remove leading and trailing parentheses
-
-            offset = re.findall(r'-?\d+(?=\()', args[1])[0] # search for a number followed by "(" character
+            labels = None if isFirstPass else self.labels
+            rt = InstructionArgument.evaluate(args[0], labels)
+            rs = InstructionArgument.evaluate(args[1], labels)
 
             self.addBytesToCode(self.formatIType(
                 43,
-                self.getRegisterNumber(rs),
-                self.getRegisterNumber(rt),
-                int(offset)
+                rs.value,
+                rt.value,
+                rs.offset
             ))
 
         elif instruction == "move":
@@ -265,7 +279,7 @@ class Assembly:
 
     def assemble(self, verbose=True):
         if self.polluted:
-            raise Error("Assembly source can only be processed once per Assembly instance")
+            raise Exception("Assembly source can only be processed once per Assembly instance")
         
         self.runPass()
         
@@ -372,7 +386,7 @@ class Assembly:
             args = list([arg.strip() for arg in args])      # remove surrounding whitespace from arguments (usually only applicable if the commas
                                                             # separating the arguments have trailing spaces)
             
-            self.onInstruction(instruction, args)
+            self.onInstruction(instruction, args, isFirstPass)
 
         self.currentLine+=1
     
