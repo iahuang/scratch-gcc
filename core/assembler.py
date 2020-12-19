@@ -1,11 +1,80 @@
-""" A basic two-pass MIPS assembler. Outputs a binary file that can then be loaded into Scratch """
+""" A basic two-pass MIPS assembler. Outputs a binary file in a custom format that can then be loaded into Scratch """
+
 import struct
+import re
 
 class AssemblyMessage:
     def __init__(self, message, line):
         self.message = message
         self.line = line
 
+class InstructionArgument:
+    """
+    Parsing class for instruction arguments
+
+    These are all valid arguments:
+        %hi(a)      # hi value of address of label a
+        %lo(a)($2)  # r2 offset by lo value of address of label a
+        4($sp)      # stack ptr offset by 4
+        $sp         # register 29
+        -8          # constant integer -8
+    
+    """
+    def __init__(self, expr):
+        self.expr = expr
+    
+    def getRegisterNumber(self, registerName):
+        """ Find the register number (0-31) from a mnemonic register name like "$fp" """
+
+        assert registerName[0] == "$", Exception("Register name must start with $")
+        registerName = registerName[1:]
+
+        names = {
+            "zero": 0,
+            "gp": 28,
+            "sp": 29,
+            "fp": 30,
+            "ra": 31
+        }
+
+        if registerName in names:
+            return names[registerName]
+        else:
+            return int(registerName)
+    
+    def evaluate(self, labels):
+        """ Evaluate the integer value of this argument.
+        Requires a [labels] argument in case this instruction argument references a label """
+
+        # to evaluate these expressions, we're going to use eval(), since i dont feel like writing a parser
+        # to mitigate security risks, we're going to restrict use of builtins and the global scope
+
+        # per https://realpython.com/python-eval-function, panic if the name __class__ is used
+        if "__class__" in self.expr:
+            raise Exception("Name in expression not allowed")
+            
+        # replace the % operator prefix with an underscore (%hi -> _hi)
+        expr = self.expr.replace("%", "_") 
+
+        # replace instances of stuff like, 4($sp) with 4+($sp)
+        def repl(matchObject: re.Match):
+            boundary = matchObject.group()
+            return boundary[0]+"+"+boundary[1]
+        expr = re.sub(r'[\w\)]\(', repl=repl, string=expr) # match boundaries between a symbol and an opening parentheses 
+
+        # replace $sp, $31, etc. with a getRegisterNumber expression
+        def repl(matchObject: re.Match):
+            registerName = matchObject.group()
+            return 'reg("{}")'.format(registerName)
+
+        expr = re.sub(r'\$\w+', repl=repl, string=expr)
+        print(expr)
+
+        # build global scope with relevant operator definitions
+        globalScope = {
+            "__builtins__": {}, # used to prevent security risks
+            "reg": lambda r: self.getRegisterNumber(r)
+        }
 
 class Assembly:
     def __init__(self):
@@ -95,22 +164,24 @@ class Assembly:
             n+=bit*positionValue
         return n
 
-    def formatIType(self, op, rs, rt, address):
+    def formatIType(self, op, rs, rt, imm):
         """
         rs is a source register—an address for loads and stores, or an operand for branch and immediate arithmetic instructions.
         rt is a source register for branches, but a destination register for the other I-type instructions
-        The address is a 16-bit signed two’s-complement value
+        imm is a 16-bit signed two’s-complement value
 
         op: 6 bits
         rs: 5 bits
         rt: 5 bits
-        address: 16 bits
+        imm: 16 bits
 
         total: 32 bits
         """
 
-        args = self._toBits(op, 6) + self._toBits(rs, 5) + self._toBits(rt, 5) + self._toBits(address, 16)
-        return struct.pack("I", self._bitsToInt(args))
+        args = self._toBits(op, 6) + self._toBits(rs, 5) + self._toBits(rt, 5) + self._toBits(imm, 16)
+
+        # Use big endian so the order is correct idk man
+        return struct.pack(">I", self._bitsToInt(args))
 
     def getRegisterNumber(self, registerName):
         """ Find the register number (0-31) from a mnemonic register name like "$fp" """
@@ -141,16 +212,33 @@ class Assembly:
         if instruction == "addiu":
             rt = args[0]
             rs = args[1]
-            addr = int(args[2])
+            imm = int(args[2])
 
             self.addBytesToCode(self.formatIType(
                 9,
                 self.getRegisterNumber(rs),
                 self.getRegisterNumber(rt),
-                addr
+                imm
             ))
         elif instruction == "sw":
-            pass
+            rt = InstructionArgument(args[0]).evaluate({})
+            rt = InstructionArgument(args[1]).evaluate({})
+
+            rt = args[0]
+            
+            # parse out offset and register from args[1] which will look something like 8($sp)
+            rs = re.findall(r'\(.+?\)', args[1])[0]
+            rs = rs[1:-1] # remove leading and trailing parentheses
+
+            offset = re.findall(r'-?\d+(?=\()', args[1])[0] # search for a number followed by "(" character
+
+            self.addBytesToCode(self.formatIType(
+                43,
+                self.getRegisterNumber(rs),
+                self.getRegisterNumber(rt),
+                int(offset)
+            ))
+
         elif instruction == "move":
             pass
         elif instruction == "lui":
