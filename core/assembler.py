@@ -377,7 +377,7 @@ class Assembly:
     
     def loadSourceFile(self, fl):
         if self.sourceLines:
-            raise Error("Assembly source already loaded")
+            raise Exception("Assembly source already loaded")
 
         with open(fl) as fl:
             flContents = fl.read()

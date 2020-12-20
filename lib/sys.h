@@ -42,9 +42,10 @@ void* malloc(unsigned int size) {
         println("malloc error: out of memory");
         _halt();
     }
+    void* new_allocated_space = heap_ptr;
 
     heap_ptr+=size;
-    return (void*)heap_ptr;
+    return new_allocated_space;
 }
 
 void free(void* ptr) {
