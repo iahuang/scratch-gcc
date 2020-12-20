@@ -135,6 +135,10 @@ class Assembly:
         # Sole purpose of outputting error messages for invalid label names
         self.codeLabelReferences = {}
 
+        # Debug:
+        self.machCodeLines = []
+        self.positionAtLastLine = 0
+
         # Outputted machine code
         self.machCode = bytearray()
 
@@ -323,9 +327,13 @@ class Assembly:
         self.sourceLines = flContents.split("\n") 
     
     def runPass(self, isFirstPass=True):
-
         for line in self.sourceLines:
             self.processLine(line, isFirstPass=isFirstPass)
+            #numBytesAddedThisLine = self.currentPos - self.positionAtLastLine
+            bytesAddedThisLine = self.machCode[self.positionAtLastLine:]
+            self.machCodeLines.append(bytesAddedThisLine)
+            self.positionAtLastLine = self.currentPos
+            
 
     def assemble(self, verbose=True):
         if self.polluted:
@@ -505,4 +513,17 @@ class Assembly:
 
             fl.write(header + programData)
 
+    def exportDebugFile(self, filename):
+        with open(filename, "w") as fl:
+            for sourceLine, lineCode in zip(self.sourceLines, self.machCodeLines):
+                fl.write(sourceLine+"\n")
+                if lineCode:
+                    codeHex = lineCode.hex(" ")
+                    codeBin = ""
+                    
+                    for i in range(0, len(lineCode)):
+                        byte = lineCode[i]
+                        codeBin+="{:08b}".format(byte)+" "
+
+                    fl.write(f"    [{codeHex}] {codeBin}\n\n")
             

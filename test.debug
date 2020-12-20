@@ -1,0 +1,59 @@
+	.file	1 "test.c"
+	.section .mdebug.abi32
+	.previous
+	.nan	legacy
+	.module	fp=xx
+	.module	nooddspreg
+	.abicalls
+	.text
+	.globl	a
+	.data
+	.align	2
+	.type	a, @object
+	.size	a, 4
+a:
+	.word	10
+    [0a 00 00 00] 00001010 00000000 00000000 00000000 
+
+	.text
+	.align	2
+	.globl	main
+	.set	nomips16
+	.set	nomicromips
+	.ent	main
+	.type	main, @function
+main:
+	.frame	$fp,8,$31		# vars= 0, regs= 1/0, args= 0, gp= 0
+	.mask	0x40000000,-4
+	.fmask	0x00000000,0
+	.set	noreorder
+	.set	nomacro
+	addiu	$sp,$sp,-8
+    [27 bd ff f8] 00100111 10111101 11111111 11111000 
+
+	sw	$fp,4($sp)
+    [af be 00 04] 10101111 10111110 00000000 00000100 
+
+	move	$fp,$sp
+	lui	$2,%hi(a)
+    [3c 02 00 00] 00111100 00000010 00000000 00000000 
+
+	lw	$2,%lo(a)($2)
+    [8c 42 00 00] 10001100 01000010 00000000 00000000 
+
+	move	$sp,$fp
+	lw	$fp,4($sp)
+    [8f be 00 04] 10001111 10111110 00000000 00000100 
+
+	addiu	$sp,$sp,8
+    [27 bd 00 08] 00100111 10111101 00000000 00001000 
+
+	jr	$31
+	nop
+
+	.set	macro
+	.set	reorder
+	.end	main
+	.size	main, .-main
+	.ident	"GCC: (Ubuntu 9.3.0-17ubuntu1~20.04) 9.3.0"
+
