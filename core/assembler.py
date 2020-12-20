@@ -3,6 +3,62 @@
 import struct
 import re
 
+"""
+Diagram of the Scratch MIPS VM memory space
+
++--------------------- <- 0x0000000
+| i/o space (see below)
++--------------------- <- 0x0000100
+| data segment
++---------------------
+| program    
+| 
++--------------------- <- everything from here up ^^^ is included in the scratch binary file
+|
+| stack      ^^^^
++--------------------- <- stack_pointer
+| uninitialized/heap
+|
+|
++--------------------- <- mem_end
+
+Static memory segment for interfacing with the Scratch VM (256 bytes wide)
+Definitions for interfacing with this part of memory can be found in "lib/sys.h"
+
+io {
+    0x00000 char stdout_buffer      - write to this address to print to the "console"
+
+    0x00004 uint32 mem_end          - pointer to the last address in memory
+
+    0x00008 uint32 stack_start      - pointer to the bottom of the stack
+
+    0x0000C uint8 halt              - set this byte to halt execution of the program
+                                      for whatever reason
+}
+
+...
+
+Scratch executable binary format (the file outputted by Assembly.outputBinaryFile() )
+
+header (100 bytes) {
+    char[4] identifier      - set to "SBIN"
+
+    uint32 program_counter  - the location in memory to begin execution
+
+    uint32 stack_pointer    - initial location of the stack pointer
+    
+    uint32 alloc_size       - total amount of system memory to allocate
+}
+
+vvvv to be loaded in starting at address 0x00000000
+
+program_data (n bytes) {
+    byte[256]               - i/o segment data (zero initialized)
+    byte[n]                 - program data
+}
+
+"""
+
 class AssemblyMessage:
     def __init__(self, message, line):
         self.message = message
@@ -161,6 +217,9 @@ class Assembly:
         self.WARN_UNKNOWN_DIRECTIVE = True
         self.MAX_STACK_SIZE = 1024
         self.MAX_HEAP_SIZE = 0
+
+        # VM Constants
+        self._IO_SPACE_SIZE = 256
 
     def addBytesToCode(self, bytes):
         for b in bytes:
@@ -327,6 +386,9 @@ class Assembly:
         self.sourceLines = flContents.split("\n") 
     
     def runPass(self, isFirstPass=True):
+        for i in range(self._IO_SPACE_SIZE):
+            self.addBytesToCode(bytes([0]))
+
         for line in self.sourceLines:
             self.processLine(line, isFirstPass=isFirstPass)
             #numBytesAddedThisLine = self.currentPos - self.positionAtLastLine
@@ -456,26 +518,8 @@ class Assembly:
         return bytes(self.machCode)
     
     def makeHeader(self, programSize, programCounter, stackSize, heapSize):
-        # see header format below
+        # see header format above
         headerFormat = "IIII"
-
-        """
-        Rough diagram of the Scratch MIPS VM memory space
-
-        +--------------------- <- 0x0000000
-        | data segment
-        +---------------------
-        | program    vvvv
-        | 
-        +---------------------
-        |
-        | stack      ^^^^
-        +---------------------
-        | uninitialized/heap
-        |
-        |
-        +---------------------
-        """
 
         totalMemorySize = programSize+stackSize+heapSize
         stackPointer = programSize+stackSize
@@ -485,23 +529,7 @@ class Assembly:
         return struct.pack(headerFormat, *structData)
 
     def exportAsBinary(self, filename):
-        """ Output Binary format
-
-        header (100 bytes) {
-            char[4] identifier      - set to "SBIN"
-
-            uint32 program_counter  - the location in memory to begin execution
-
-            uint32 stack_pointer    - initial location of the stack pointer
-            
-            uint32 alloc_size       - total amount of system memory to allocate
-        }
-
-        program_data (n bytes) {
-            byte[n]                 - program data to be loaded in starting at address 0x00000000
-        }
-
-        """
+        # see format above
         with open(filename, 'wb') as fl:
             programData = self.getMachineCode()
             header = self.makeHeader(

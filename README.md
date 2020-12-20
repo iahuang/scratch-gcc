@@ -6,3 +6,7 @@
 1. Compile C program to MIPS assembly using `mips-linux-gnu-gcc` (you may need to install this first)
 2. Assemble assembly program into a simplified binary format
 3. Load binary into a Scratch file containing a MIPS assembly VM
+
+### Important notes:
+
+- Most of the C Standard Library is not supported. Use the library "lib/sys.h" for replacement functions
