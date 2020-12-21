@@ -29,7 +29,7 @@ main:
 	addiu	$sp,$sp,-8
 	sw	$fp,4($sp)
 	move	$fp,$sp
-	lui	$2,%hi(a)
+	lui	$2,%hi(ad)
 	lw	$2,%lo(a)($2)
 	move	$sp,$fp
 	lw	$fp,4($sp)
