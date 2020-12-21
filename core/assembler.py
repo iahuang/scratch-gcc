@@ -2,6 +2,8 @@
 
 import struct
 import re
+import json
+import os
 
 """
 Diagram of the Scratch MIPS VM memory space
@@ -216,6 +218,7 @@ class MIPSInstructionFormat:
     def _toBits(self, n, numBits):
         """
         convert [n] into a bit array [numBits] bits long 
+        
         example: _toBits(50, 6) -> [1, 1, 0, 0, 1, 0]
         """
         bitArray = []
@@ -228,6 +231,7 @@ class MIPSInstructionFormat:
     def _bitsToInt(self, bitArray):
         """
         convert [bitArray] into a single number
+
         example: _bitArrayToInt([1, 1, 0, 0, 1, 0]) -> 50 (0b110010)
         """
         n = 0
@@ -253,13 +257,19 @@ class MIPSInstructionFormat:
         given unparsed and preset instruction arguments
 
         Arguments:
+
         argFormatString - a string dictating how to parse the values provided in argStrings
+
         argStrings      - a list of strings directly corresponding to the arguments of the instruction
+        
         presetArgs      - other arguments to be set manually (not parsed)
+
         labels          - assembler label table to assist in parsing (not required for first-pass)
 
         argFormat examples:
+
         "rs,rt,imm" // args[0] is rs, args[1] is rt and so on
+
         "rs,imm+rt" // args[0] is rs, args[1] is rt offset by imm
         """
 
@@ -282,15 +292,15 @@ class MIPSInstructionFormat:
             else: # there is an offset
                 offsetArgName, argName = argFormat
                 argParsed = InstructionArgument.evaluate(argExpr)
-                val, err = argParsed.value
+                val, err = argParsed
                 argValues[argName] = val.value
 
                 offset = 0 # default to 0 if no offset parsable
                 
-                if argParsed.offset == None: # if there was no offset parsable, add an error
+                if val.offset == None: # if there was no offset parsable, add an error
                     errors.append(AssemblyMessage(f'Argument of format "{argFormat}" expected offset, but none was found'))
                 else:
-                    offset = argParsed.offset
+                    offset = val.offset
 
                 argValues[offsetArgName] = offset
 
@@ -319,6 +329,18 @@ class InstructionFormats:
         .argument("imm", bits=16)
     )
 
+class AssemblerDataTable:
+    """
+    A wrapper for a file containing information about the various instructions
+    and assembly symbols for the assembler to use
+    """
+    def __init__(self, tableFile):
+        with open(tableFile) as fl:
+            _data = json.load(fl)
+        
+        self.meta = _data["meta"]
+        self.ignoredDirectives = _data["directives"]["ignore"]
+        self.itypeInstructions = _data["instructions"]["i_type"]
 
 class Assembly:
     def __init__(self):
@@ -354,6 +376,13 @@ class Assembly:
         # Has this source been processed yet? (Assembly source can only be processed once per Assembly instance)
         self.polluted = False
 
+        # data table
+        dataTablePath = os.path.dirname(os.path.realpath(__file__))
+        self.asmDataTable = AssemblerDataTable(dataTablePath+"/asm_data_table.json")
+
+        # other
+        self.ident = None # the info set by the .ident directive
+
         # Settings
         self.WARN_UNKNOWN_DIRECTIVE = True
         self.MAX_STACK_SIZE = 1024
@@ -383,6 +412,10 @@ class Assembly:
     def onDirective(self, directive, args, isFirstPass):
         if directive == "word":
             self.addBytesToCode(self.toWord(int(args[0])))
+        elif directive == "ident":
+            self.ident = args[0]
+        elif directive in self.asmDataTable.ignoredDirectives:
+            pass
         else:
             if self.WARN_UNKNOWN_DIRECTIVE and isFirstPass:
                 msg = 'Unknown assembler directive "{}"'.format(directive)
@@ -409,18 +442,23 @@ class Assembly:
 
         labels = None if isFirstPass else self.labels
 
-        # Process actual instructions
-        if instruction == "addiu":
+        # Process I-Type instructions
+        if instruction in self.asmDataTable.itypeInstructions:
+            instructionData = self.asmDataTable.itypeInstructions[instruction]
+            argFormat = instructionData["arg_format"]
+            opcode = instructionData["opcode"]
+
             code, errors = InstructionFormats.IType.buildInstructionCode(
-                argFormatString="rt,rs,imm",
+                argFormatString=argFormat,
                 argStrings=args,
-                presetArgs={"op": 0b001001},
+                presetArgs={"op": opcode},
                 labels=labels
             )
             self.trackErrorsToCurrentLine(errors)
             self.addBytesToCode(code)
-        else:
-            self.createError('Unknown instruction "{}"'.format(instruction))
+            return
+        
+        self.createError('Unknown instruction "{}"'.format(instruction))
 
     def loadSourceFile(self, fl):
         if self.sourceLines:

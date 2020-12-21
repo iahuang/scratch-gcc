@@ -1,0 +1,114 @@
+{
+    "meta": {
+        "description": "Table of opcodes and argument formats for MIPS type processors"
+    },
+    "directives": {
+        "ignore": [
+            "file",
+            "section",
+            "previous",
+            "nan",
+            "module",
+            "abicalls",
+            "text",
+            "globl",
+            "data",
+            "align",
+            "type",
+            "size",
+            "set",
+            "ent",
+            "type",
+            "frame",
+            "mask",
+            "fmask",
+            "set",
+            "end",
+            "size"
+        ]
+    },
+    "instructions": {
+        "i_type": {
+            "beq": {
+                "arg_format": "rs,rt,imm",
+                "opcode": 4
+            },
+            "bne": {
+                "arg_format": "rs,rt,imm",
+                "opcode": 5
+            },
+            "blez": {
+                "arg_format": "rs,imm",
+                "opcode": 6
+            },
+            "bgtz": {
+                "arg_format": "rs,imm",
+                "opcode": 7
+            },
+            "addi": {
+                "arg_format": "rs,rt,imm",
+                "opcode": 8
+            },
+            "addiu": {
+                "arg_format": "rs,rt,imm",
+                "opcode": 9
+            },
+            "slti": {
+                "arg_format": "rs,rt,imm",
+                "opcode": 10
+            },
+            "sltiu": {
+                "arg_format": "rs,rt,imm",
+                "opcode": 11
+            },
+            "andi": {
+                "arg_format": "rs,rt,imm",
+                "opcode": 12
+            },
+            "ori": {
+                "arg_format": "rs,rt,imm",
+                "opcode": 13
+            },
+            "xori": {
+                "arg_format": "rs,rt,imm",
+                "opcode": 14
+            },
+            "lui": {
+                "arg_format": "rt,imm",
+                "opcode": 15
+            },
+            "lb": {
+                "arg_format": "rt,imm+rs",
+                "opcode": 32
+            },
+            "lh": {
+                "arg_format": "rt,imm+rs",
+                "opcode": 33
+            },
+            "lw": {
+                "arg_format": "rt,imm+rs",
+                "opcode": 34
+            },
+            "lbu": {
+                "arg_format": "rt,imm+rs",
+                "opcode": 36
+            },
+            "lhu": {
+                "arg_format": "rt,imm+rs",
+                "opcode": 37
+            },
+            "sb": {
+                "arg_format": "rt,imm+rs",
+                "opcode": 40
+            },
+            "sh": {
+                "arg_format": "rt,imm+rs",
+                "opcode": 41
+            },
+            "sw": {
+                "arg_format": "rt,imm+rs",
+                "opcode": 43
+            }
+        }
+    }
+}
