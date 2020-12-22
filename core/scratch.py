@@ -21,6 +21,9 @@ TEMPDIR = "tmp/"
 def remove_ext(filename):
     return os.path.splitext(filename)[0]
 
+def randomId(size=16):
+    return "".join([random.choice("1234567890abcdef") for i in range(size)])
+
 class ScratchAsset:
     def __init__(self, location):
         self.path = Path(location)
@@ -269,6 +272,10 @@ class ScratchTarget:
     
     def getVariables(self):
         return list(self._variables.values())
+    
+    def addVariable(self, name, value=""):
+        newId = randomId()
+        self._variables[newId] = Variable(newId, name, value)
     
     def getLists(self):
         return list(self._lists.values())
@@ -536,6 +543,11 @@ class ScratchProject:
         # clean up
         if removeTemporary:
             shutil.rmtree(cwd)
+    
+    def getTarget(self, name):
+        for target in self.targets:
+            if target.name == name:
+                return name
 
     def __enter__(self):
         return self

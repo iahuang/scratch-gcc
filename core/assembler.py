@@ -68,15 +68,6 @@ class AssemblyMessage:
         self.line = line
 
 
-class ITypeArgumentFormat:
-    """ See InstructionArgument.addITypeFormatInstruction() """
-    RS_RT_IMM = 0
-    RS_IMM = 1
-    RT_RS_IMM = 2
-    RT_IMM = 3
-    RT_RS_IMM_OFFSET = 4
-
-
 class InstructionArgument:
     """
     Class that represents an instruction argument
@@ -307,19 +298,21 @@ class MIPSInstructionFormat:
                 if err:
                     errors.append(err)
         
-        # check: make sure length of argValues is consistent with the number of expected arguments
-        #        specified by this instruction format
+        # fill missing arguments with value 0
 
-        if len(argValues) != len(self._args):
-            errors.append(AssemblyMessage(f'Expected {len(self._args)} arguments, but found {len(argValues)}'))
+        for requiredArg in self.argNames:
+            if not requiredArg in argValues:
+                argValues[requiredArg] = 0
+        
+        # check for extraneous arguments
 
-            # invalidade argument values and replace them with zeros to prevent exceptions later on
-
-            argValues = {argName:0 for argName in self.argNames}
+        for suppliedArg in argValues:
+            if not suppliedArg in self.argNames:
+                errors.append(AssemblyMessage(f'Extraneous argument with name "{suppliedArg}"'))
 
         code = InstructionFormats.IType.byteCodeFromArgs(argValues)
         return code, errors
-
+a
 class InstructionFormats:
     IType = (
         MIPSInstructionFormat()
@@ -327,6 +320,19 @@ class InstructionFormats:
         .argument("rs", bits=5)
         .argument("rt", bits=5)
         .argument("imm", bits=16)
+    )
+    RType = (
+        MIPSInstructionFormat()
+        .argument("op", bits=6)
+        .argument("rs", bits=5)
+        .argument("rt", bits=5)
+        .argument("rd", bits=5)
+        .argument("func", bits=6)
+    )
+    JType = (
+        MIPSInstructionFormat()
+        .argument("op", bits=6)
+        .argument("addr", bits=26)
     )
 
 class AssemblerDataTable:

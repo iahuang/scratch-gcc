@@ -28,6 +28,143 @@
         ]
     },
     "instructions": {
+        "r_type": {
+            "sll": {
+                "arg_format": "rd,rt,shamt",
+                "opcode": 0,
+                "func": 0
+            },
+            "srl": {
+                "arg_format": "rd,rt,shamt",
+                "opcode": 0,
+                "func": 0
+            },
+            "sra": {
+                "arg_format": "rd,rt,shamt",
+                "opcode": 0,
+                "func": 0
+            },
+            "sllv": {
+                "arg_format": "rd,rt,rs",
+                "opcode": 0,
+                "func": 0
+            },
+            "srlv": {
+                "arg_format": "rd,rt,rs",
+                "opcode": 0,
+                "func": 0
+            },
+            "srav": {
+                "arg_format": "rd,rt,rs",
+                "opcode": 0,
+                "func": 0
+            },
+            "jr": {
+                "arg_format": "rs",
+                "opcode": 0,
+                "func": 0
+            },
+            "jalr": {
+                "arg_format": "rd,rs",
+                "opcode": 0,
+                "func": 0
+            },
+            "syscall": {
+                "arg_format": "",
+                "opcode": 0,
+                "func": 0
+            },
+            "mfhi": {
+                "arg_format": "rd",
+                "opcode": 0,
+                "func": 0
+            },
+            "mthi": {
+                "arg_format": "rs",
+                "opcode": 0,
+                "func": 0
+            },
+            "mflo": {
+                "arg_format": "rd",
+                "opcode": 0,
+                "func": 0
+            },
+            "mtlo": {
+                "arg_format": "rs",
+                "opcode": 0,
+                "func": 0
+            },
+            "mult": {
+                "arg_format": "",
+                "opcode": 0,
+                "func": 0
+            },
+            "multu": {
+                "arg_format": "",
+                "opcode": 0,
+                "func": 0
+            },
+            "div": {
+                "arg_format": "",
+                "opcode": 0,
+                "func": 0
+            },
+            "divu": {
+                "arg_format": "",
+                "opcode": 0,
+                "func": 0
+            },
+            "add": {
+                "arg_format": "",
+                "opcode": 0,
+                "func": 0
+            },
+            "addu": {
+                "arg_format": "",
+                "opcode": 0,
+                "func": 0
+            },
+            "sub": {
+                "arg_format": "",
+                "opcode": 0,
+                "func": 0
+            },
+            "subu": {
+                "arg_format": "",
+                "opcode": 0,
+                "func": 0
+            },
+            "and": {
+                "arg_format": "",
+                "opcode": 0,
+                "func": 0
+            },
+            "or": {
+                "arg_format": "",
+                "opcode": 0,
+                "func": 0
+            },
+            "xor": {
+                "arg_format": "",
+                "opcode": 0,
+                "func": 0
+            },
+            "nor": {
+                "arg_format": "",
+                "opcode": 0,
+                "func": 0
+            },
+            "slt": {
+                "arg_format": "",
+                "opcode": 0,
+                "func": 0
+            },
+            "sltu": {
+                "arg_format": "",
+                "opcode": 0,
+                "func": 0
+            }
+        },
         "i_type": {
             "beq": {
                 "arg_format": "rs,rt,imm",

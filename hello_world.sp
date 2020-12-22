@@ -1,0 +1,2 @@
+main:
+    say("Hello World!")
