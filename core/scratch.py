@@ -289,6 +289,14 @@ class ScratchTarget:
                 oldChild.parentId = block.id
             
             after.nextId = block.id
+    
+    def createBlock(self, pos=None):
+        newBlock = Block(self, randomId())
+        if pos:
+            newBlock.x = pos[0]
+            newBlock.y = pos[1]
+        self.addBlock(newBlock)
+        return newBlock
 
     def loadFromParse(self, data: dict):
         self.name = data["name"]

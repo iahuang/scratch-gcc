@@ -64,9 +64,17 @@ class SPCodeBlock:
         self.statements = []
 
 class SPContainer:
-    """ A top-level container is a event block or myblock (function) declaration. contains a SPCodeBlock body """
+    """
+    A top-level container is a event block or myblock (function) declaration. contains a SPCodeBlock body.
+    You can think of a container as the stuff that actually contains code
+    """
     def __init__(self):
         self.body = None
+
+class SPFunctionArgument:
+    def __init__(self, name, isBoolean):
+        self.name = name
+        self.isBoolean = isBoolean
 
 class SPFunctionDefinition(SPContainer):
     def __init__(self, fname, args):
@@ -74,6 +82,11 @@ class SPFunctionDefinition(SPContainer):
 
         self.fname = fname
         self.args = args
+    
+    def getArgument(self, name):
+        for arg in self.args:
+            if arg.name == name:
+                return arg
 
 class SPOnBroadcastDefinition(SPContainer):
     def __init__(self, broadcastName):
@@ -257,7 +270,7 @@ class SPModuleParser:
                                                             # doesn't get mad that we have an incomplete function definition
             print(ast.dump(funcDefNode))
             functionName = funcDefNode.name
-            functionArgs = funcDefNode.args.args
+            functionArgNodes = funcDefNode.args.args
 
             if funcDefNode.args.vararg:
                 self.throwError("Variadic arguments are not supported")
@@ -265,12 +278,24 @@ class SPModuleParser:
             if funcDefNode.args.kwarg:
                 self.throwError("Keyword arguments are not supported")
             
-            if functionName == "main" and functionArgs:
+            if functionName == "main" and functionArgNodes:
                 self.throwError("main function should not have arguments")
+            
+            functionArgs = []
+            for argNode in functionArgNodes:
+                isBoolean = False
+
+                if type(argNode.annotation) == ast.Name:
+                    if argNode.annotation.id == "bool":
+                        isBoolean = True
+                
+                functionArgs.append(SPFunctionArgument(argNode.arg, isBoolean))
+            
+            container = SPFunctionDefinition(functionName, functionArgs)
         
         else:
             self.throwError(f'Unexpected symbol "{line.split(" ")[0]}"')
-            
+        
         # ok now parse the subsequent indented lines (statements) into a code block
         # but actually increment the global line counter
         codeBlock = SPCodeBlock()
@@ -292,12 +317,23 @@ class SPModuleParser:
             # remove block indentation from line
             _line = _line[len(_leadingWhitespace[0]):]
 
-            statement = self._parseStatementLine(_line)
+            # if the code block exists inside a function definition, we need to specify
+            # information about the function arguments otherwise they will be considered
+            # undefined symbols
+
+            functionContext = None
+            if type(container) == SPFunctionDefinition:
+                functionContext = container.args
+
+            statement = self._parseStatementLine(_line, functionContext)
 
             codeBlock.statements.append(statement)
             self.currentLine+=1
         
-        
+        # don't worry about container being None, if the container type was unable
+        # to be determined by this point, a critical error would have been thrown already
+        container.body = codeBlock
+        return container
 
     def _parseTopLevelLine(self, line: str):
         line = self._removeComments(line).rstrip() # remove comments and trailing whitespace 
@@ -320,8 +356,13 @@ class SPModuleParser:
             self._parseContainerDefinition(line)
             return
     
-    def _parseStatementLine(self, line):
-        """ Parse a codeblock line into a SPStatement object. Returns None if a non-critical error occurred """
+    def _parseStatementLine(self, line, functionArgs=None):
+        """
+        Parse a codeblock line into a SPStatement object. Returns None if a non-critical error occurred.
+
+        If this statement line exists inside of a function definition body, pass the SBFunctionDefinition.args list as well
+        so that symbolic definitions for its arguments can be included as well
+        """
         # codeblock statements should all be valid python code
         # use ast.parse to parse them in this case
 
@@ -349,6 +390,7 @@ class SPModuleParser:
                 
                 symbolName = leftHandAssignment.id
                 symbolType = self.module.findSymbolType(symbolName)
+
                 if symbolType == None:
                     self.throwError(f'Undefined symbol "{symbolName}"', critical=False)
                 
@@ -368,6 +410,11 @@ class SPModuleParser:
             return SPStatement(
                 type=STATEMENT_ASSIGN,
                 params=[param_leftHand, param_rightHand, param_mut]
+            )
+        elif type(node) == ast.Return:
+            return SPStatement(
+                type=STATEMENT_RETURN,
+                params=[node.value]
             )
 
         else:
