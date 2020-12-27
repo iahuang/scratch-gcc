@@ -1,6 +1,7 @@
 from core import scratch
 
-scratch.ScratchProject.decompile("test_environment.sb3")
+scratch.ScratchProject.decompile("test_environment.sb3", "proj2.json")
+scratch.ScratchProject.decompile("test.sb3", "project.json")
 
 # import ast
 

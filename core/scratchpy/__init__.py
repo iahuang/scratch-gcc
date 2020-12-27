@@ -2,6 +2,10 @@
 ScratchPy - A simple Python-based scripting language that compiles to scratch
 """
 import ast
+import random
+
+def randomId(size=16):
+    return "".join([random.choice("1234567890abcdef") for i in range(size)])
 
 class ParsingError(Exception):pass 
 
@@ -35,6 +39,9 @@ class SPFunctionArgument:
     def __init__(self, name, isBoolean):
         self.name = name
         self.isBoolean = isBoolean
+        self.id = randomId()
+    def getArgumentDefault(self):
+        return False if self.isBoolean else ""
 
 class SPFunctionDefinition(SPContainer):
     def __init__(self, fname, args):

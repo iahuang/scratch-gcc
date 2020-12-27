@@ -6,15 +6,18 @@ text = """
 var a = 0
 
 def main():
-    a = 1+a
+    a = a*a+2
 
-def add(a, b):
+def add(a,b):
     return a+b
-    
+
+# def add(a,b):
+#     return a+b
 """
 
 module = parser.parseText(text)
 print(module.functionBlocks[0].body)
+#print(module.functionBlocks[1].body)
 
 with SPModuleCompiler() as compiler:
     compiler.compileModule(module)

@@ -35,7 +35,7 @@ class ScratchAsset:
         return self.data
 
 class BlockInput:
-    def __init__(self, inputName: str, shadowValue: int, value, third=None):
+    def __init__(self, inputName: str, value, defaultValue=None):
         """ From the Scratch wiki:
 
         An object associating names with arrays representing inputs into which reporters may be dropped and C mouths. [?]
@@ -50,22 +50,14 @@ class BlockInput:
         - Not entirely sure what the third element (BlockInput.third) does
 
         """
-
-        self._shadowType = shadowValue
         self.inputName = inputName
+        
+        self.value = value
+        self.defaultValue = defaultValue
 
-        # argument value will either be an ID, or an array of type [T, value] where T is an integer representing the type 
-        # of the input
-        self.value = None # value or ID
-        self.valueTypeId = None # T
-        self.third = third
-
-        if type(value) == list:
-            self.valueTypeId = value[0]
-            self.value = value[1]
-        else:
-            self.value = value
-            self.valueTypeId = 1 # type SHADOW
+    @property
+    def shadow(self):
+        return 3 if self.defaultValue else 1
     
     def linkedValue(self, target):
         """ Return the block referenced by self.value, throws an error if self.valueTypeId is not of an id type """
@@ -97,14 +89,14 @@ class BlockInput:
     def serializeValue(self):
         """ Output a value of type [T, value] where value is either an ID or another, typed value """
         # decide whether value is an ID
+        
+        if self.defaultValue:
+            return [self.shadow, self.value, self.defaultValue]
 
-        if self.valueTypeName == "id":
-            return [self._shadowType, self.value]
-        else:
-            return [self._shadowType, [self.valueTypeId, self.value]]
+        return [self.shadow, self.value]
     
     def __repr__(self):
-        return f"<Input \"{self.inputName}\" type \"{self.valueTypeName}\" : {repr(self.value)}>"
+        return f"<Input \"{self.inputName}\">"
 
 class Block:
     def __init__(self, target, id: str):
@@ -118,8 +110,10 @@ class Block:
         self._topLevel = None
         self.parentId = None
         self.nextId = None
-        self.x = 0
-        self.y = 0
+        self.x = None
+        self.y = None
+
+        self.mutation = None
     
     def loadFromParse(self, blockData):
         self.opcode = blockData["opcode"]
@@ -129,7 +123,11 @@ class Block:
         self._topLevel = blockData["topLevel"]
 
         for inputName, inputData in blockData["inputs"].items():
-            input = BlockInput(inputName=inputName, shadowValue=inputData[0], value=inputData[1])
+            default = None
+            if len(inputData) == 3:
+                default = inputData[2]
+
+            input = BlockInput(inputName=inputName, value=inputData[1], defaultValue=default)
             self.inputs.append(input)
 
         for fieldName, fieldData in blockData["fields"].items():
@@ -182,7 +180,10 @@ class Block:
                 "x": self.x,
                 "y": self.y
             })
-
+        if self.mutation:
+            baseData.update({
+                "mutation": self.mutation
+            })
         return baseData
 
     def __repr__(self):
@@ -249,6 +250,7 @@ class ScratchTarget:
         self.sounds = {}
         self.volume = 100
         self.layerOrder = 0
+        self.broadcasts: dict[str, str] = {}
 
         # stage ony
         self.tempo = 60
@@ -267,15 +269,36 @@ class ScratchTarget:
     
     # Getters and setters
 
+    def findBroadcastId(self, name):
+        for id, bname in self.broadcasts.items():
+            if bname == name:
+                return id
+
     def getBlocks(self):
         return list(self._blocks.values())
     
     def getVariables(self):
         return list(self._variables.values())
+
+    def findVariableByName(self, name):
+        for var in self.getVariables():
+            if var.name == name:
+                return var
     
+    def findListByName(self, name):
+        for list in self.getLists():
+            if list.name == name:
+                return list
+
     def addVariable(self, name, value=""):
         newId = randomId()
         self._variables[newId] = Variable(newId, name, value)
+        return newId
+    
+    def addList(self, name, value=[]):
+        newId = randomId()
+        self._lists[newId] = List(newId, name, value)
+        return newId
     
     def getLists(self):
         return list(self._lists.values())
@@ -290,11 +313,18 @@ class ScratchTarget:
             
             after.nextId = block.id
     
-    def createBlock(self, pos=None):
+    def createBlock(self, pos=None, parent: Block=None, previous: Block=None):
         newBlock = Block(self, randomId())
+
         if pos:
             newBlock.x = pos[0]
             newBlock.y = pos[1]
+        if parent:
+            newBlock.parentId = parent.id
+        if previous:
+            newBlock.parentId = previous.id
+            previous.nextId = newBlock.id
+            
         self.addBlock(newBlock)
         return newBlock
 
@@ -389,6 +419,7 @@ class ScratchTarget:
                 "draggable": self.draggable,
                 "rotationStyle": self.rotationStyle
             })
+        
 
         return baseData
 
@@ -403,21 +434,6 @@ class ScratchTarget:
 
     def getBlock(self, id) -> Block:
         return self._blocks.get(id, None)
-
-    def linkBlocks(self, parent, child):
-        parent = self.getBlock(parent)
-        child = self.getBlock(child)
-
-        # unlink previous blocks if necessary
-
-        if child.parentId:
-            self.getBlock(child.parentId).nextId = None
-
-        if parent.next:
-            self.getBlock(parent.nextId).parentId = None
-
-        child.parent = parent.id
-        parent.next = child.id
 
     def _randomBlockId(self):
         return "".join([random.choice("1234567890abcdef") for i in range(16)])
@@ -555,7 +571,7 @@ class ScratchProject:
     def getTarget(self, name):
         for target in self.targets:
             if target.name == name:
-                return name
+                return target
 
     def __enter__(self):
         return self
