@@ -35,7 +35,7 @@ class ScratchAsset:
         return self.data
 
 class BlockInput:
-    def __init__(self, inputName: str, value, defaultValue=None):
+    def __init__(self, inputName: str, value, defaultValue=None, noShadow=False):
         """ From the Scratch wiki:
 
         An object associating names with arrays representing inputs into which reporters may be dropped and C mouths. [?]
@@ -54,9 +54,12 @@ class BlockInput:
         
         self.value = value
         self.defaultValue = defaultValue
+        self.noShadow = noShadow
 
     @property
     def shadow(self):
+        if self.noShadow:
+            return 2
         return 3 if self.defaultValue else 1
     
     def linkedValue(self, target):
@@ -89,10 +92,13 @@ class BlockInput:
     def serializeValue(self):
         """ Output a value of type [T, value] where value is either an ID or another, typed value """
         # decide whether value is an ID
+
+        if self.noShadow:
+            return [self.shadow, self.value]
         
         if self.defaultValue:
             return [self.shadow, self.value, self.defaultValue]
-
+    
         return [self.shadow, self.value]
     
     def __repr__(self):
@@ -266,6 +272,8 @@ class ScratchTarget:
         self.direction = 90
         self.draggable = False
         self.rotationStyle = "all around"
+
+        self.proj: ScratchProject = None
     
     # Getters and setters
 
@@ -466,7 +474,9 @@ class ScratchProject:
 
         self.targets: list[ScratchTarget] = []
         for targetData in self._projectData["targets"]:
-            self.targets.append(ScratchTarget().loadFromParse(targetData))
+            target = ScratchTarget().loadFromParse(targetData)
+            target.proj = self
+            self.targets.append(target)
 
         self.monitors = self._projectData["monitors"]
         self.extensions = self._projectData["extensions"]

@@ -1,1 +1,557 @@
-{"targets": [{"name": "Stage", "isStage": true, "variables": {"`jEk@4|i[#Fk?(8x)AV.-my variable": ["my variable", 0]}, "lists": {}, "broadcasts": {}, "blocks": {}, "comments": {}, "sounds": [{"assetId": "83a9787d4cb6f3b7632b4ddfebf74367", "name": "pop", "dataFormat": "wav", "format": "", "rate": 48000, "sampleCount": 1123, "md5ext": "83a9787d4cb6f3b7632b4ddfebf74367.wav"}], "costumes": [{"assetId": "cd21514d0531fdffb22204e0ec5ed84a", "name": "backdrop1", "md5ext": "cd21514d0531fdffb22204e0ec5ed84a.svg", "dataFormat": "svg", "rotationCenterX": 240, "rotationCenterY": 180}], "currentCostume": 0, "volume": 100, "layerOrder": 0, "tempo": 60, "videoTransparency": 50, "videoState": "on", "textToSpeechLanguage": null}, {"name": "__main__", "isStage": false, "variables": {"331f3d2cbcd5cfbd": ["__sp", "0"], "63cc630a5aa37170": ["__tmp0", "0"], "c0bc8ece0f33cd20": ["__tmp1", "0"], "7477729f03cb99db": ["__tmp2", "0"], "a7fd8732772a6d62": ["__tmp3", "0"], "d774f3b4a79adae6": ["__tmp4", "0"], "58d855ed72da1ce7": ["__tmp5", "0"], "1a8a973fe0ccdb66": ["__tmp6", "0"], "72218ba396024ee1": ["__tmp7", "0"], "80e0afaa02fe3476": ["__tmp8", "0"], "fde26ab980f26ed1": ["__tmp9", "0"], "995b19e119b08efb": ["__tmp10", "0"], "686c72028f4af028": ["__tmp11", "0"], "54bedf5d364d71ad": ["__tmp12", "0"], "2d49160a0fa9cada": ["__tmp13", "0"], "aa078ee600da6e3b": ["__tmp14", "0"], "d122aa4269a41fa4": ["__tmp15", "0"], "e112cea8645d5e20": ["__tmp16", "0"], "a7f1bc764582d099": ["__tmp17", "0"], "17097cdcf626e6b4": ["__tmp18", "0"], "85962fcbccaa0fe8": ["__tmp19", "0"], "21cf2d7823bc336b": ["__tmp20", "0"], "1d542c7228201340": ["__tmp21", "0"], "f75fa3737fcef2d3": ["__tmp22", "0"], "59fbcd651a73bcd4": ["__tmp23", "0"], "1eb158f9a910603d": ["__tmp24", "0"], "d7bb509667e4bc17": ["__tmp25", "0"], "3bc338a1f831faaf": ["__tmp26", "0"], "96b5238f08609471": ["__tmp27", "0"], "5eb21c57d8061aeb": ["__tmp28", "0"], "8d2107ef7f49ba67": ["__tmp29", "0"], "3e956a7f986d6078": ["__tmp30", "0"], "533e1ce33fa15d57": ["__tmp31", "0"], "76271142a092921f": ["__tmp32", "0"], "31fefb55adf0ee96": ["__tmp33", "0"], "5f49f6b213061fa0": ["__tmp34", "0"], "7d22dd524a4a3334": ["__tmp35", "0"], "fadd0522175b6a5a": ["__tmp36", "0"], "5d94c4ab5d5648db": ["__tmp37", "0"], "75a382c3b69db8e9": ["__tmp38", "0"], "02dc7a87afb263a9": ["__tmp39", "0"], "5930b643e039c4c3": ["__tmp40", "0"], "c6fd1d4f5561975c": ["__tmp41", "0"], "66d53b5e440370b8": ["__tmp42", "0"], "0f6cf17a0efaa7be": ["__tmp43", "0"], "217f9e35e04302cc": ["__tmp44", "0"], "4bb59a75f646fa8e": ["__tmp45", "0"], "54e36017ec9d199a": ["__tmp46", "0"], "21fa843b3f7b807b": ["__tmp47", "0"], "fc576726c9168fe6": ["__tmp48", "0"], "9ff84b2602b77ef5": ["__tmp49", "0"], "784ea46760ef8a8f": ["__tmp50", "0"], "4c148191363a84d7": ["__tmp51", "0"], "0ca8f4544d72320b": ["__tmp52", "0"], "430b8bf8b1566057": ["__tmp53", "0"], "b00b04eae0bb55f1": ["__tmp54", "0"], "d4d7d2d74689bd4e": ["__tmp55", "0"], "294c27e8d418b2f7": ["__tmp56", "0"], "7ff5d428bb32e6ce": ["__tmp57", "0"], "98453d0572269e69": ["__tmp58", "0"], "ad0f3a069585d541": ["__tmp59", "0"], "420dbf735725e098": ["__tmp60", "0"], "7a06c7a6d0c6e8d5": ["__tmp61", "0"], "c970ce6044c63458": ["__tmp62", "0"], "8d73ec68a40d5fe9": ["__tmp63", "0"], "3ed1a695a9770bfc": ["__zero", "0"], "316528ae2131cddd": ["__one", "1"]}, "lists": {"07c2a9abc12fec2e": ["__testlist", [1, 2, 3, 4]]}, "broadcasts": {"broadcastec038e5a964af367": "__test"}, "blocks": {"34a8890e4e81af43": {"opcode": "event_whenbroadcastreceived", "inputs": {}, "fields": {"BROADCAST_OPTION": ["__test", "broadcastec038e5a964af367"]}, "shadow": false, "topLevel": true, "parent": null, "next": "741c0fc89b3eceea", "x": 0, "y": 0}, "741c0fc89b3eceea": {"opcode": "data_setvariableto", "inputs": {"VALUE": [1, [4, "__tmp0"]]}, "fields": {"VARIABLE": ["__tmp1", "c0bc8ece0f33cd20"]}, "shadow": false, "topLevel": false, "parent": "34a8890e4e81af43", "next": "03c5510b8b644aa2"}, "03c5510b8b644aa2": {"opcode": "data_setvariableto", "inputs": {"VALUE": [3, "032eb836a0233b51", [4, "0"]]}, "fields": {"VARIABLE": ["__tmp1", "c0bc8ece0f33cd20"]}, "shadow": false, "topLevel": false, "parent": "741c0fc89b3eceea", "next": "936edbc81d3e2c68"}, "032eb836a0233b51": {"opcode": "operator_add", "inputs": {"NUM1": [3, [12, "__tmp1", "c0bc8ece0f33cd20"], [4, "0"]], "NUM2": [3, [12, "__tmp0", "63cc630a5aa37170"], [4, "0"]]}, "fields": {}, "shadow": false, "topLevel": false, "parent": "03c5510b8b644aa2", "next": null}, "936edbc81d3e2c68": {"opcode": "data_setvariableto", "inputs": {"VALUE": [3, [12, "__tmp0", "63cc630a5aa37170"], [4, "0"]]}, "fields": {"VARIABLE": ["__tmp1", "c0bc8ece0f33cd20"]}, "shadow": false, "topLevel": false, "parent": "03c5510b8b644aa2", "next": "957a592f22617321"}, "957a592f22617321": {"opcode": "data_setvariableto", "inputs": {"VALUE": [3, "f39031e71f826be1", [4, "0"]]}, "fields": {"VARIABLE": ["__tmp2", "7477729f03cb99db"]}, "shadow": false, "topLevel": false, "parent": "936edbc81d3e2c68", "next": "443d5d808a9da799"}, "f39031e71f826be1": {"opcode": "operator_gt", "inputs": {"OPERAND1": [3, [12, "__tmp1", "c0bc8ece0f33cd20"], [4, "0"]], "OPERAND2": [3, [12, "__tmp0", "63cc630a5aa37170"], [4, "0"]]}, "fields": {}, "shadow": false, "topLevel": false, "parent": "957a592f22617321", "next": null}, "443d5d808a9da799": {"opcode": "data_setvariableto", "inputs": {"VALUE": [3, "60abaa8f76298f58", [4, "0"]]}, "fields": {"VARIABLE": ["__tmp0", "63cc630a5aa37170"]}, "shadow": false, "topLevel": false, "parent": "957a592f22617321", "next": null}, "60abaa8f76298f58": {"opcode": "data_itemoflist", "inputs": {"INDEX": [3, [12, "__tmp1", "c0bc8ece0f33cd20"], [4, "0"]]}, "fields": {"LIST": ["__testlist", "07c2a9abc12fec2e"]}, "shadow": false, "topLevel": false, "parent": "443d5d808a9da799", "next": null}}, "comments": {}, "sounds": [{"assetId": "83c36d806dc92327b9e7049a565c6bff", "name": "Meow", "dataFormat": "wav", "format": "", "rate": 48000, "sampleCount": 40681, "md5ext": "83c36d806dc92327b9e7049a565c6bff.wav"}], "costumes": [{"assetId": "b7853f557e4426412e64bb3da6531a99", "name": "costume1", "bitmapResolution": 1, "md5ext": "b7853f557e4426412e64bb3da6531a99.svg", "dataFormat": "svg", "rotationCenterX": 48, "rotationCenterY": 50}, {"assetId": "e6ddc55a6ddd9cc9d84fe0b4c21e016f", "name": "costume2", "bitmapResolution": 1, "md5ext": "e6ddc55a6ddd9cc9d84fe0b4c21e016f.svg", "dataFormat": "svg", "rotationCenterX": 46, "rotationCenterY": 53}], "currentCostume": 0, "volume": 100, "layerOrder": 1, "visible": true, "x": 0, "y": 0, "size": 100, "direction": 90, "draggable": false, "rotationStyle": "all around"}], "monitors": [], "extensions": [], "meta": {"semver": "3.0.0", "vm": "0.2.0-prerelease.20201016122132", "agent": "Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Scratch/3.18.1 Chrome/80.0.3987.165 Electron/8.2.5 Safari/537.36"}}
+{
+    "targets": [
+        {
+            "name": "Stage",
+            "isStage": true,
+            "variables": {
+                "`jEk@4|i[#Fk?(8x)AV.-my variable": ["my variable", 0]
+            },
+            "lists": {},
+            "broadcasts": {
+                "bcf6275aa50b6eae7d": "_call_main",
+                "bc720e2bef1329040b": "_call_add",
+                "bc6742deba616447b0": "__test",
+                "bcf5d9c298e5a38ba1": "__nop",
+                "bcd387bd6949297f8c": "__stack_grow",
+                "bcd3289f4d71f715c3": "__tmp0_false",
+                "bc6053d50b27c673a8": "__tmp0_true"
+            },
+            "blocks": {},
+            "comments": {},
+            "sounds": [
+                {
+                    "assetId": "83a9787d4cb6f3b7632b4ddfebf74367",
+                    "name": "pop",
+                    "dataFormat": "wav",
+                    "format": "",
+                    "rate": 48000,
+                    "sampleCount": 1123,
+                    "md5ext": "83a9787d4cb6f3b7632b4ddfebf74367.wav"
+                }
+            ],
+            "costumes": [
+                {
+                    "assetId": "cd21514d0531fdffb22204e0ec5ed84a",
+                    "name": "backdrop1",
+                    "md5ext": "cd21514d0531fdffb22204e0ec5ed84a.svg",
+                    "dataFormat": "svg",
+                    "rotationCenterX": 240,
+                    "rotationCenterY": 180
+                }
+            ],
+            "currentCostume": 0,
+            "volume": 100,
+            "layerOrder": 0,
+            "tempo": 60,
+            "videoTransparency": 50,
+            "videoState": "on",
+            "textToSpeechLanguage": null
+        },
+        {
+            "name": "__main__",
+            "isStage": false,
+            "variables": {
+                "1436db0484969546": ["a", "0"],
+                "579cd7ebbbec3c80": ["_main_retval", "0"],
+                "e543a93f8b27b6a1": ["_add_arg_x", "0"],
+                "6be19612cfee9b0a": ["_add_arg_y", "0"],
+                "851395f6b9d8f327": ["_add_retval", "0"],
+                "02cc0cece9a92a44": ["__sp", "0"],
+                "997d287030c7b9ea": ["__tmp0", "0"],
+                "003a7d13b46166ab": ["__tmp1", "0"],
+                "c998d41dd89f276e": ["__tmp2", "0"],
+                "99235011d2494f32": ["__tmp3", "0"],
+                "f21ed49f06fb6821": ["__tmp4", "0"],
+                "9494a4d7d5faaf16": ["__tmp5", "0"],
+                "19e39091c1dd1f4f": ["__tmp6", "0"],
+                "6bd470c26f8c83c1": ["__tmp7", "0"],
+                "baec8da21cf1acef": ["__tmp8", "0"],
+                "9e7fa6d26e844825": ["__tmp9", "0"],
+                "6482392b0e788ce7": ["__tmp10", "0"],
+                "3577e3707b7b5e16": ["__tmp11", "0"],
+                "72a7f84e430e3e3f": ["__tmp12", "0"],
+                "6c65ad0ed86a6514": ["__tmp13", "0"],
+                "e8c9981529550ad7": ["__tmp14", "0"],
+                "3f310ef48de5156b": ["__tmp15", "0"],
+                "c37a661d1f46cbca": ["__tmp16", "0"],
+                "99d56e15d0f826ce": ["__tmp17", "0"],
+                "7bd50228f141ded0": ["__tmp18", "0"],
+                "a5e1cdcb7b2bb2c1": ["__tmp19", "0"],
+                "6a0923dc4b88643c": ["__tmp20", "0"],
+                "7bbca4ece2670633": ["__tmp21", "0"],
+                "d5b398e044731709": ["__tmp22", "0"],
+                "3c8c453ce1031635": ["__tmp23", "0"],
+                "23c5dd20c06e01fa": ["__tmp24", "0"],
+                "dd17480207aa91b6": ["__tmp25", "0"],
+                "a7829abdd8b3100f": ["__tmp26", "0"],
+                "e23c589697970322": ["__tmp27", "0"],
+                "536466e2d539944f": ["__tmp28", "0"],
+                "87599983636de10c": ["__tmp29", "0"],
+                "a634d3d3432923e5": ["__tmp30", "0"],
+                "8c4e395f5e348797": ["__tmp31", "0"],
+                "8aec99ca0151dd6f": ["__tmp32", "0"],
+                "c530eb5a46e46c55": ["__tmp33", "0"],
+                "e98e650e7d3d0fe0": ["__tmp34", "0"],
+                "ed8f92adf1a64af0": ["__tmp35", "0"],
+                "aef38e818b08a750": ["__tmp36", "0"],
+                "5baf28b9f5919c52": ["__tmp37", "0"],
+                "3a5c9f947bfe33e9": ["__tmp38", "0"],
+                "d1aa25943acb0261": ["__tmp39", "0"],
+                "7cb7ce9dff5de979": ["__tmp40", "0"],
+                "c4d2992b2b7b2044": ["__tmp41", "0"],
+                "cf2b8757c30399a2": ["__tmp42", "0"],
+                "437a49bc938d5d8c": ["__tmp43", "0"],
+                "4ac259b3ed915d73": ["__tmp44", "0"],
+                "c6f80f62070eeeea": ["__tmp45", "0"],
+                "8a7992429678bcf3": ["__tmp46", "0"],
+                "e26d266300cca737": ["__tmp47", "0"],
+                "dd9111239479939b": ["__tmp48", "0"],
+                "a051eb52606cbb0d": ["__tmp49", "0"],
+                "d569b9de319dc82d": ["__tmp50", "0"],
+                "831002db8ff8a2e1": ["__tmp51", "0"],
+                "34c13a85f9f62d10": ["__tmp52", "0"],
+                "18e249051ed2a166": ["__tmp53", "0"],
+                "49c10eed08794781": ["__tmp54", "0"],
+                "e6f57dd0ffcf6fb0": ["__tmp55", "0"],
+                "9d977c27c7f8e1d8": ["__tmp56", "0"],
+                "52773a8da0f0dd34": ["__tmp57", "0"],
+                "c1aae2c1706552ff": ["__tmp58", "0"],
+                "1e85b00bcd9b296a": ["__tmp59", "0"],
+                "398c1d02790b42e6": ["__tmp60", "0"],
+                "37325d40b404eb20": ["__tmp61", "0"],
+                "9947b15dcf17d9ad": ["__tmp62", "0"],
+                "44eba449f273001d": ["__tmp63", "0"],
+                "0404fe14bf0cd7bc": ["__zero", "0"],
+                "2dc20877d8f2ed24": ["__one", "1"]
+            },
+            "lists": { "0ef65b9d094a2d09": ["__stack", [0, 0, 0, 0]] },
+            "broadcasts": {},
+            "blocks": {
+                "1e521eddba069082": {
+                    "opcode": "event_whenbroadcastreceived",
+                    "inputs": {},
+                    "fields": {
+                        "BROADCAST_OPTION": ["_call_main", "bcf6275aa50b6eae7d"]
+                    },
+                    "shadow": false,
+                    "topLevel": true,
+                    "parent": null,
+                    "next": "2f5e4b563aacd1d2",
+                    "x": 0,
+                    "y": 0
+                },
+                "2f5e4b563aacd1d2": {
+                    "opcode": "data_setvariableto",
+                    "inputs": {
+                        "VALUE": [3, [12, "a", "1436db0484969546"], [4, "0"]]
+                    },
+                    "fields": { "VARIABLE": ["__tmp4", "f21ed49f06fb6821"] },
+                    "shadow": false,
+                    "topLevel": false,
+                    "parent": "1e521eddba069082",
+                    "next": "20806d3e40775a83"
+                },
+                "20806d3e40775a83": {
+                    "opcode": "data_setvariableto",
+                    "inputs": {
+                        "VALUE": [3, [12, "a", "1436db0484969546"], [4, "0"]]
+                    },
+                    "fields": { "VARIABLE": ["__tmp5", "9494a4d7d5faaf16"] },
+                    "shadow": false,
+                    "topLevel": false,
+                    "parent": "2f5e4b563aacd1d2",
+                    "next": "77c703f4f1446401"
+                },
+                "77c703f4f1446401": {
+                    "opcode": "data_setvariableto",
+                    "inputs": { "VALUE": [3, "b36d54e1a5b51e13", [4, "0"]] },
+                    "fields": { "VARIABLE": ["__tmp4", "f21ed49f06fb6821"] },
+                    "shadow": false,
+                    "topLevel": false,
+                    "parent": "20806d3e40775a83",
+                    "next": "c3367868a10e3498"
+                },
+                "b36d54e1a5b51e13": {
+                    "opcode": "operator_multiply",
+                    "inputs": {
+                        "NUM1": [
+                            3,
+                            [12, "__tmp4", "f21ed49f06fb6821"],
+                            [4, "0"]
+                        ],
+                        "NUM2": [
+                            3,
+                            [12, "__tmp5", "9494a4d7d5faaf16"],
+                            [4, "0"]
+                        ]
+                    },
+                    "fields": {},
+                    "shadow": false,
+                    "topLevel": false,
+                    "parent": "77c703f4f1446401",
+                    "next": null
+                },
+                "c3367868a10e3498": {
+                    "opcode": "data_setvariableto",
+                    "inputs": { "VALUE": [1, [4, 2]] },
+                    "fields": { "VARIABLE": ["__tmp6", "19e39091c1dd1f4f"] },
+                    "shadow": false,
+                    "topLevel": false,
+                    "parent": "77c703f4f1446401",
+                    "next": "78cc48d62861f661"
+                },
+                "78cc48d62861f661": {
+                    "opcode": "data_setvariableto",
+                    "inputs": { "VALUE": [3, "8c81e8a32874894f", [4, "0"]] },
+                    "fields": { "VARIABLE": ["__tmp4", "f21ed49f06fb6821"] },
+                    "shadow": false,
+                    "topLevel": false,
+                    "parent": "c3367868a10e3498",
+                    "next": "88bc802a3886a32d"
+                },
+                "8c81e8a32874894f": {
+                    "opcode": "operator_add",
+                    "inputs": {
+                        "NUM1": [
+                            3,
+                            [12, "__tmp4", "f21ed49f06fb6821"],
+                            [4, "0"]
+                        ],
+                        "NUM2": [
+                            3,
+                            [12, "__tmp6", "19e39091c1dd1f4f"],
+                            [4, "0"]
+                        ]
+                    },
+                    "fields": {},
+                    "shadow": false,
+                    "topLevel": false,
+                    "parent": "78cc48d62861f661",
+                    "next": null
+                },
+                "88bc802a3886a32d": {
+                    "opcode": "data_setvariableto",
+                    "inputs": {
+                        "VALUE": [
+                            3,
+                            [12, "__tmp4", "f21ed49f06fb6821"],
+                            [4, "0"]
+                        ]
+                    },
+                    "fields": { "VARIABLE": ["a", "1436db0484969546"] },
+                    "shadow": false,
+                    "topLevel": false,
+                    "parent": "78cc48d62861f661",
+                    "next": null
+                },
+                "30ac3243e61a239d": {
+                    "opcode": "event_whenbroadcastreceived",
+                    "inputs": {},
+                    "fields": {
+                        "BROADCAST_OPTION": ["_call_add", "bc720e2bef1329040b"]
+                    },
+                    "shadow": false,
+                    "topLevel": true,
+                    "parent": null,
+                    "next": "f2da82ce378b5c95",
+                    "x": 0,
+                    "y": 0
+                },
+                "f2da82ce378b5c95": {
+                    "opcode": "data_setvariableto",
+                    "inputs": {
+                        "VALUE": [
+                            3,
+                            [12, "_add_arg_x", "e543a93f8b27b6a1"],
+                            [4, "0"]
+                        ]
+                    },
+                    "fields": { "VARIABLE": ["__tmp4", "f21ed49f06fb6821"] },
+                    "shadow": false,
+                    "topLevel": false,
+                    "parent": "30ac3243e61a239d",
+                    "next": "9ee2ce1a0ecd7589"
+                },
+                "9ee2ce1a0ecd7589": {
+                    "opcode": "data_setvariableto",
+                    "inputs": {
+                        "VALUE": [
+                            3,
+                            [12, "_add_arg_y", "6be19612cfee9b0a"],
+                            [4, "0"]
+                        ]
+                    },
+                    "fields": { "VARIABLE": ["__tmp5", "9494a4d7d5faaf16"] },
+                    "shadow": false,
+                    "topLevel": false,
+                    "parent": "f2da82ce378b5c95",
+                    "next": "4a6e16bf1a2311de"
+                },
+                "4a6e16bf1a2311de": {
+                    "opcode": "data_setvariableto",
+                    "inputs": { "VALUE": [3, "71f3823022b68f44", [4, "0"]] },
+                    "fields": { "VARIABLE": ["__tmp4", "f21ed49f06fb6821"] },
+                    "shadow": false,
+                    "topLevel": false,
+                    "parent": "9ee2ce1a0ecd7589",
+                    "next": "ff1b673e3b2acf31"
+                },
+                "71f3823022b68f44": {
+                    "opcode": "operator_add",
+                    "inputs": {
+                        "NUM1": [
+                            3,
+                            [12, "__tmp4", "f21ed49f06fb6821"],
+                            [4, "0"]
+                        ],
+                        "NUM2": [
+                            3,
+                            [12, "__tmp5", "9494a4d7d5faaf16"],
+                            [4, "0"]
+                        ]
+                    },
+                    "fields": {},
+                    "shadow": false,
+                    "topLevel": false,
+                    "parent": "4a6e16bf1a2311de",
+                    "next": null
+                },
+                "ff1b673e3b2acf31": {
+                    "opcode": "data_setvariableto",
+                    "inputs": {
+                        "VALUE": [
+                            3,
+                            [12, "__tmp4", "f21ed49f06fb6821"],
+                            [4, "0"]
+                        ]
+                    },
+                    "fields": {
+                        "VARIABLE": ["_add_retval", "851395f6b9d8f327"]
+                    },
+                    "shadow": false,
+                    "topLevel": false,
+                    "parent": "4a6e16bf1a2311de",
+                    "next": null
+                },
+                "969c363260bd61ec": {
+                    "opcode": "event_whenbroadcastreceived",
+                    "inputs": {},
+                    "fields": {
+                        "BROADCAST_OPTION": ["__test", "bc6742deba616447b0"]
+                    },
+                    "shadow": false,
+                    "topLevel": true,
+                    "parent": null,
+                    "next": "8b649d550cce3878",
+                    "x": 0,
+                    "y": 0
+                },
+                "8b649d550cce3878": {
+                    "opcode": "control_if_else",
+                    "inputs": {
+                        "CONDITION": [3, "1a2d6b99b5055756", [4, "0"]],
+                        "SUBSTACK": [2, "3ebff546b72df1d6"],
+                        "SUBSTACK2": [2, "96138e774f2211a6"]
+                    },
+                    "fields": {},
+                    "shadow": false,
+                    "topLevel": false,
+                    "parent": "969c363260bd61ec",
+                    "next": null
+                },
+                "1a2d6b99b5055756": {
+                    "opcode": "operator_equals",
+                    "inputs": {
+                        "OPERAND1": [
+                            3,
+                            [12, "__tmp0", "997d287030c7b9ea"],
+                            [4, "0"]
+                        ],
+                        "OPERAND2": [1, [10, "true"]]
+                    },
+                    "fields": {},
+                    "shadow": false,
+                    "topLevel": false,
+                    "parent": "8b649d550cce3878",
+                    "next": null
+                },
+                "3ebff546b72df1d6": {
+                    "opcode": "event_broadcastandwait",
+                    "inputs": { "BROADCAST_INPUT": [1, [11, "__nop", null]] },
+                    "fields": {},
+                    "shadow": false,
+                    "topLevel": false,
+                    "parent": "8b649d550cce3878",
+                    "next": null
+                },
+                "96138e774f2211a6": {
+                    "opcode": "event_broadcastandwait",
+                    "inputs": { "BROADCAST_INPUT": [1, [11, "__nop", null]] },
+                    "fields": {},
+                    "shadow": false,
+                    "topLevel": false,
+                    "parent": "8b649d550cce3878",
+                    "next": null
+                },
+                "182fbd484473db1b": {
+                    "opcode": "event_whenbroadcastreceived",
+                    "inputs": {},
+                    "fields": {
+                        "BROADCAST_OPTION": ["__nop", "bcf5d9c298e5a38ba1"]
+                    },
+                    "shadow": false,
+                    "topLevel": true,
+                    "parent": null,
+                    "next": "7280a5f5e85b324f",
+                    "x": 0,
+                    "y": 0
+                },
+                "7280a5f5e85b324f": {
+                    "opcode": "data_setvariableto",
+                    "inputs": {
+                        "VALUE": [
+                            3,
+                            [12, "__tmp0", "997d287030c7b9ea"],
+                            [4, "0"]
+                        ]
+                    },
+                    "fields": { "VARIABLE": ["__tmp0", "997d287030c7b9ea"] },
+                    "shadow": false,
+                    "topLevel": false,
+                    "parent": "182fbd484473db1b",
+                    "next": null
+                },
+                "ca8e38932a770824": {
+                    "opcode": "event_whenbroadcastreceived",
+                    "inputs": {},
+                    "fields": {
+                        "BROADCAST_OPTION": [
+                            "__stack_grow",
+                            "bcd387bd6949297f8c"
+                        ]
+                    },
+                    "shadow": false,
+                    "topLevel": true,
+                    "parent": null,
+                    "next": "3e945162c3ef14aa",
+                    "x": 0,
+                    "y": 0
+                },
+                "3e945162c3ef14aa": {
+                    "opcode": "data_addtolist",
+                    "inputs": {
+                        "ITEM": [
+                            3,
+                            [12, "__zero", "0404fe14bf0cd7bc"],
+                            [4, "0"]
+                        ]
+                    },
+                    "fields": { "LIST": ["__stack", "0ef65b9d094a2d09"] },
+                    "shadow": false,
+                    "topLevel": false,
+                    "parent": "ca8e38932a770824",
+                    "next": null
+                },
+                "20ed26076f400337": {
+                    "opcode": "event_whenbroadcastreceived",
+                    "inputs": {},
+                    "fields": {
+                        "BROADCAST_OPTION": [
+                            "__tmp0_false",
+                            "bcd3289f4d71f715c3"
+                        ]
+                    },
+                    "shadow": false,
+                    "topLevel": true,
+                    "parent": null,
+                    "next": "8c205b94088df354",
+                    "x": 0,
+                    "y": 0
+                },
+                "8c205b94088df354": {
+                    "opcode": "data_setvariableto",
+                    "inputs": { "VALUE": [1, [4, "false"]] },
+                    "fields": { "VARIABLE": ["__tmp0", "997d287030c7b9ea"] },
+                    "shadow": false,
+                    "topLevel": false,
+                    "parent": "20ed26076f400337",
+                    "next": null
+                },
+                "bea1e5a7df766135": {
+                    "opcode": "event_whenbroadcastreceived",
+                    "inputs": {},
+                    "fields": {
+                        "BROADCAST_OPTION": [
+                            "__tmp0_true",
+                            "bc6053d50b27c673a8"
+                        ]
+                    },
+                    "shadow": false,
+                    "topLevel": true,
+                    "parent": null,
+                    "next": "7d3371f783185355",
+                    "x": 0,
+                    "y": 0
+                },
+                "7d3371f783185355": {
+                    "opcode": "data_setvariableto",
+                    "inputs": { "VALUE": [1, [4, "true"]] },
+                    "fields": { "VARIABLE": ["__tmp0", "997d287030c7b9ea"] },
+                    "shadow": false,
+                    "topLevel": false,
+                    "parent": "bea1e5a7df766135",
+                    "next": null
+                }
+            },
+            "comments": {},
+            "sounds": [
+                {
+                    "assetId": "83c36d806dc92327b9e7049a565c6bff",
+                    "name": "Meow",
+                    "dataFormat": "wav",
+                    "format": "",
+                    "rate": 48000,
+                    "sampleCount": 40681,
+                    "md5ext": "83c36d806dc92327b9e7049a565c6bff.wav"
+                }
+            ],
+            "costumes": [
+                {
+                    "assetId": "b7853f557e4426412e64bb3da6531a99",
+                    "name": "costume1",
+                    "bitmapResolution": 1,
+                    "md5ext": "b7853f557e4426412e64bb3da6531a99.svg",
+                    "dataFormat": "svg",
+                    "rotationCenterX": 48,
+                    "rotationCenterY": 50
+                },
+                {
+                    "assetId": "e6ddc55a6ddd9cc9d84fe0b4c21e016f",
+                    "name": "costume2",
+                    "bitmapResolution": 1,
+                    "md5ext": "e6ddc55a6ddd9cc9d84fe0b4c21e016f.svg",
+                    "dataFormat": "svg",
+                    "rotationCenterX": 46,
+                    "rotationCenterY": 53
+                }
+            ],
+            "currentCostume": 0,
+            "volume": 100,
+            "layerOrder": 1,
+            "visible": true,
+            "x": 0,
+            "y": 0,
+            "size": 100,
+            "direction": 90,
+            "draggable": false,
+            "rotationStyle": "all around"
+        }
+    ],
+    "monitors": [],
+    "extensions": [],
+    "meta": {
+        "semver": "3.0.0",
+        "vm": "0.2.0-prerelease.20201016122132",
+        "agent": "Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Scratch/3.18.1 Chrome/80.0.3987.165 Electron/8.2.5 Safari/537.36"
+    }
+}

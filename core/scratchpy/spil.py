@@ -42,6 +42,9 @@ Built-in Broadcasts:
     broadcast "__nop":          - do nothing
         nop
 
+    broadcast "__stack_grow":   - grow the stack by 1 element
+        apd __stack __zero
+
 Instruction Set:
 
 load dest [x]   - load value [x] into dest  
@@ -54,6 +57,8 @@ div dest x      - divide dest by x
 
 get dest list i - load list[i] into dest (zero indexed)
 set list i x    - load x into list[i] (zero indexed)
+apd list x      - append x to the end of [list]
+len list dest   - load length of [list] into dest
 
 gt dest x y     - set dest to the boolean value of whether x > y 
 lt dest x y     - set dest to the boolean value of whether x < y
@@ -62,6 +67,7 @@ and dest x y    - set dest to the boolean value of x AND y
 or dest x y     - set dest to the boolean value of x OR y
 
 branch cond b1 b2   - broadcast b1 if cond is set to "true" else broadcast b2 
+jump b              - broadcast b
 
 call [function] - call my-block defined at compile-time. no arguments
 
@@ -71,13 +77,19 @@ not dest        - boolean invert variable dest
     load __tmp1 "true"
     eq __tmp0 dest __tmp1
 
-    branch __tmp0 __tmp0_false ___tmp1_true
+    branch __tmp0 __tmp0_false ___tmp0_true
     copy dest __tmp0
 
 push x          - push x onto __stack
-    set __stack __sp x
-    load __tmp0 1
-    add __sp __tmp0
+    set __stack __sp x                  # set value at stack pointer to x
+    add __sp __one                      # add 1 to __sp
+    len __stack __tmp2                  # find size of stack
+    eq __tmp1 __sp __tmp2               # check if __sp == len(stack)
+    branch __tmp1 __stack_grow __nop    # grow stack if needed
+
+pop dest        - pop off stack into dest
+    sub __sp __one
+    get dest __stack __sp
 
 neq dest x y    - set dest to the boolean value of whether x != y
     eq dest x y
@@ -104,11 +116,10 @@ class Instruction:
         Reporter blocks will be added to the target but not added to the returned list"""
         raise Exception("Cannot convert base Instruction class")
 
-
 def makeBroadcastInput(target: scratch.ScratchTarget, inputName, broadcastName):
     return scratch.BlockInput(
         inputName,
-        [11, broadcastName, target.findBroadcastId(broadcastName)]
+        [11, broadcastName, target.proj.getStage().findBroadcastId(broadcastName)]
     )
 
 def makeVariableInput(target: scratch.ScratchTarget, inputName, varName, defaultValue="0"):
@@ -124,6 +135,13 @@ def makeReporterInput(target: scratch.ScratchTarget, inputName, reporter: scratc
         inputName,
         reporter.id,
         [4, defaultValue]
+    )
+
+def makeBlockInput(target: scratch.ScratchTarget, inputName, block: scratch.Block):
+    return scratch.BlockInput(
+        inputName,
+        block.id,
+        noShadow=True
     )
 
 
@@ -271,8 +289,15 @@ class Get(Instruction):
         assignBlock.opcode = "data_setvariableto"
 
         reporterBlock = target.createBlock(parent=assignBlock)
+        indexBlock = target.createBlock(parent=reporterBlock)
+        indexBlock.opcode = "operator_add"
+        indexBlock.inputs = [
+            makeVariableInput(target, "NUM1", self.i),
+            makeValueInput(target, "NUM2", 1)
+        ]
+
         reporterBlock.opcode = "data_itemoflist"
-        reporterBlock.inputs = [makeVariableInput(target, "INDEX", self.i)]
+        reporterBlock.inputs = [makeReporterInput(target, "INDEX", indexBlock)]
         reporterBlock.fields = [makeListField(target, "LIST", self.list)]
 
         assignBlock.inputs = [makeReporterInput(target, "VALUE", reporterBlock)]
@@ -289,12 +314,51 @@ class Set(Instruction):
         assignBlock = target.createBlock()
         assignBlock.opcode = "data_replaceitemoflist"
 
+        indexBlock = target.createBlock(parent=assignBlock)
+        indexBlock.opcode = "operator_add"
+        indexBlock.inputs = [
+            makeVariableInput(target, "NUM1", self.i),
+            makeValueInput(target, "NUM2", 1)
+        ]
+
         assignBlock.inputs = [
-            makeVariableInput(target, "INDEX", self.i),
+            makeReporterInput(target, "INDEX", indexBlock),
             makeVariableInput(target, "ITEM", self.x)
         ]
         assignBlock.fields = [makeListField(target, "LIST", self.list)]
         return [assignBlock]
+
+
+class Len(Instruction):
+    def __init__(self, list, dest):
+        self.list = list
+        self.dest = dest
+
+    def convertToBlocks(self, target: scratch.ScratchTarget):
+        assignBlock = target.createBlock()
+        assignBlock.opcode = "data_setvariableto"
+        assignBlock.fields = [makeVariableField(target, "VARIABLE", self.dest)]
+
+        reporterBlock = target.createBlock(parent=assignBlock)
+        reporterBlock.opcode = "data_lengthoflist"
+        reporterBlock.fields = [makeListField(target, "LIST", self.list)]
+
+        assignBlock.inputs = [makeReporterInput(target, "VALUE", reporterBlock)]
+
+        return [assignBlock]
+
+class Apd(Instruction):
+    def __init__(self, list, x):
+        self.list = list
+        self.x = x
+    
+    def convertToBlocks(self, target: scratch.ScratchTarget):
+        block = target.createBlock()
+        block.opcode = "data_addtolist"
+        block.inputs = [makeVariableInput(target, "ITEM", self.x)]
+        block.fields = [makeListField(target, "LIST", self.list)]
+        
+        return [block]
 
 class Branch(Instruction):
     def __init__(self, cond, b1, b2):
@@ -323,18 +387,73 @@ class Branch(Instruction):
 
         ifelseBlock.inputs = [
             makeReporterInput(target, "CONDITION", condBlock),
-            makeReporterInput(target, "SUBSTACK", yesBlock),
-            makeReporterInput(target, "SUBSTACK2", noBlock)
+            makeBlockInput(target, "SUBSTACK", yesBlock),
+            makeBlockInput(target, "SUBSTACK2", noBlock)
         ]
 
         return [ifelseBlock]
 
+class Jump(Instruction):
+    def __init__(self, b):
+        self.b = b
+    def convertToBlocks(self, target: scratch.ScratchTarget):
+        block = target.createBlock()
+        block.opcode = "event_broadcastandwait"
+        block.inputs = [makeBroadcastInput(target, "BROADCAST_INPUT", self.b)]
+
+        return [block]
 
 """ Pseudo Operations """
 
-class Nop(Instruction):
+class PseudoInstruction(Instruction):
+    def expandsTo(self) -> list:
+        """ To be overridden """
+        raise Exception("yea")
+
     def convertToBlocks(self, target: scratch.ScratchTarget):
-        return Copy("__tmp0", "__tmp0").convertToBlocks(target)
+        blocks = []
+        for inst in self.expandsTo():
+            blocks+=inst.convertToBlocks(target)
+        return blocks
+
+class Nop(PseudoInstruction):
+    def expandsTo(self) -> list:
+        return (Copy("__tmp0", "__tmp0"),)
+
+class Not(PseudoInstruction):
+    def __init__(self, dest):
+        self.dest = dest
+    
+    def expandsTo(self):
+        return (
+            Load("__tmp1", "true"),
+            Eq("__tmp0", "dest", "__tmp1"),
+            Branch("__tmp0", "__tmp0_false", "__tmp0_true"),
+            Copy("dest", "__tmp0")
+        )
+
+class Push(PseudoInstruction):
+    def __init__(self, x):
+        self.x = x
+    
+    def expandsTo(self):
+        return (
+            Set("__stack", "__sp", self.x),
+            Add("__sp", "__one"),
+            Len("__stack", "__tmp2"),
+            Eq("__tmp1", "__sp", "__tmp2"),
+            Branch("__tmp1", "__stack_grow", "__nop")
+        )
+
+class Pop(PseudoInstruction):
+    def __init__(self, dest):
+        self.dest = dest
+    
+    def expandsTo(self):
+        return (
+            Sub("__sp", "__one"),
+            Get(self.dest, "__stack", "__sp")
+        )
 
 class CompilationContext:
     def __init__(self):
@@ -371,7 +490,7 @@ def makeInstructionChain(target: scratch.ScratchTarget, instructions: list):
     return blocks
 
 class SPILProgram:
-    def __init__(self, target: scratch.ScratchTarget):
+    def __init__(self, target: scratch.ScratchTarget, stage: scratch.ScratchTarget):
         self.variables: list[str] = []
         self.variableIds = {}
 
@@ -384,6 +503,7 @@ class SPILProgram:
         self.compileContext = CompilationContext()
 
         self.target = target
+        self.stage = stage
 
     def getBroadcastId(self, id):
         return self.broadcastIds[id]
@@ -398,27 +518,37 @@ class SPILProgram:
 
     def makeBuiltins(self):
         """ Create built-in variables, broadcasts, etc. """
-        self.createVariable("__sp")
+        self.createVariable("__sp", 0)
 
         for i in range(64):
             self.createVariable("__tmp"+str(i))
 
         self.createVariable("__zero", 0)
         self.createVariable("__one", 1)
-        self.createList("__testlist", [1,2,3,4])
+        self.createList("__stack", [0, 0, 0, 0])
 
         b = Broadcast("__test")
-        b.body.append(Load("__tmp1", "__tmp0"))
-        b.body.append(Add("__tmp1", "__tmp0"))
-        b.body.append(Copy("__tmp1", "__tmp0"))
-        b.body.append(Gt("__tmp2", "__tmp0", "__tmp1"))
-        b.body.append(Get("__tmp0", "__testlist", "__tmp1"))
-        b.body.append(Branch("__tmp2", "__nop", "__nop"))
+        b.body.append(Push("__tmp4"))
+        self.broadcasts.append(b)
+
+        b = Broadcast("__test2")
+        b.body.append(Pop("__tmp4"))
         self.broadcasts.append(b)
 
         b = Broadcast("__nop")
         b.body.append(Nop())
+        self.broadcasts.append(b)
 
+        b = Broadcast("__stack_grow")
+        b.body.append(Apd("__stack", "__zero"))
+        self.broadcasts.append(b)
+
+        b = Broadcast("__tmp0_false")
+        b.body.append(Load("__tmp0", "false"))
+        self.broadcasts.append(b)
+
+        b = Broadcast("__tmp0_true")
+        b.body.append(Load("__tmp0", "true"))
         self.broadcasts.append(b)
 
     def compileToTarget(self):
@@ -426,11 +556,11 @@ class SPILProgram:
 
         # make broadcast ids
         for broadcast in self.broadcasts:
-            self.broadcastIds[broadcast.name] = "broadcast"+scratch.randomId()
+            self.broadcastIds[broadcast.name] = "bc"+scratch.randomId()
 
-        # add broadcast ids to target
+        # add broadcast ids to stage
         for name, id in self.broadcastIds.items():
-            self.target.broadcasts[id] = name
+            self.stage.broadcasts[id] = name
 
         # add variables to target
         for varName in self.variables:

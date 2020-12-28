@@ -8,8 +8,8 @@
             },
             "lists": {},
             "broadcasts": {
-                "A=g7B6e:xA3%,;wf@dA9": "__ELSE",
-                "X;t=+J1]ony+]e^s_)S-": "__YES"
+                "mln;xBxL)`ebhlP-@^s8": "ye",
+                "J+F?QE{_0pfzlX|daF=p": "fasdfds"
             },
             "blocks": {},
             "comments": {},
@@ -44,152 +44,45 @@
         },
         {
             "isStage": false,
-            "name": "__main__",
-            "variables": {
-                "331f3d2cbcd5cfbd": ["__sp", "0"],
-                "63cc630a5aa37170": ["__tmp0", "0"],
-                "c0bc8ece0f33cd20": ["__tmp1", "0"],
-                "7477729f03cb99db": ["__tmp2", "0"],
-                "a7fd8732772a6d62": ["__tmp3", "0"],
-                "d774f3b4a79adae6": ["__tmp4", "0"],
-                "58d855ed72da1ce7": ["__tmp5", "0"],
-                "1a8a973fe0ccdb66": ["__tmp6", "0"],
-                "72218ba396024ee1": ["__tmp7", "0"],
-                "80e0afaa02fe3476": ["__tmp8", "0"],
-                "fde26ab980f26ed1": ["__tmp9", "0"],
-                "995b19e119b08efb": ["__tmp10", "0"],
-                "686c72028f4af028": ["__tmp11", "0"],
-                "54bedf5d364d71ad": ["__tmp12", "0"],
-                "2d49160a0fa9cada": ["__tmp13", "0"],
-                "aa078ee600da6e3b": ["__tmp14", "0"],
-                "d122aa4269a41fa4": ["__tmp15", "0"],
-                "e112cea8645d5e20": ["__tmp16", "0"],
-                "a7f1bc764582d099": ["__tmp17", "0"],
-                "17097cdcf626e6b4": ["__tmp18", "0"],
-                "85962fcbccaa0fe8": ["__tmp19", "0"],
-                "21cf2d7823bc336b": ["__tmp20", "0"],
-                "1d542c7228201340": ["__tmp21", "0"],
-                "f75fa3737fcef2d3": ["__tmp22", "0"],
-                "59fbcd651a73bcd4": ["__tmp23", "0"],
-                "1eb158f9a910603d": ["__tmp24", "0"],
-                "d7bb509667e4bc17": ["__tmp25", "0"],
-                "3bc338a1f831faaf": ["__tmp26", "0"],
-                "96b5238f08609471": ["__tmp27", "0"],
-                "5eb21c57d8061aeb": ["__tmp28", "0"],
-                "8d2107ef7f49ba67": ["__tmp29", "0"],
-                "3e956a7f986d6078": ["__tmp30", "0"],
-                "533e1ce33fa15d57": ["__tmp31", "0"],
-                "76271142a092921f": ["__tmp32", "0"],
-                "31fefb55adf0ee96": ["__tmp33", "0"],
-                "5f49f6b213061fa0": ["__tmp34", "0"],
-                "7d22dd524a4a3334": ["__tmp35", "0"],
-                "fadd0522175b6a5a": ["__tmp36", "0"],
-                "5d94c4ab5d5648db": ["__tmp37", "0"],
-                "75a382c3b69db8e9": ["__tmp38", "0"],
-                "02dc7a87afb263a9": ["__tmp39", "0"],
-                "5930b643e039c4c3": ["__tmp40", "0"],
-                "c6fd1d4f5561975c": ["__tmp41", "0"],
-                "66d53b5e440370b8": ["__tmp42", "0"],
-                "0f6cf17a0efaa7be": ["__tmp43", "0"],
-                "217f9e35e04302cc": ["__tmp44", "0"],
-                "4bb59a75f646fa8e": ["__tmp45", "0"],
-                "54e36017ec9d199a": ["__tmp46", "0"],
-                "21fa843b3f7b807b": ["__tmp47", "0"],
-                "fc576726c9168fe6": ["__tmp48", "0"],
-                "9ff84b2602b77ef5": ["__tmp49", "0"],
-                "784ea46760ef8a8f": ["__tmp50", "0"],
-                "4c148191363a84d7": ["__tmp51", "0"],
-                "0ca8f4544d72320b": ["__tmp52", "0"],
-                "430b8bf8b1566057": ["__tmp53", "0"],
-                "b00b04eae0bb55f1": ["__tmp54", "0"],
-                "d4d7d2d74689bd4e": ["__tmp55", "0"],
-                "294c27e8d418b2f7": ["__tmp56", "0"],
-                "7ff5d428bb32e6ce": ["__tmp57", "0"],
-                "98453d0572269e69": ["__tmp58", "0"],
-                "ad0f3a069585d541": ["__tmp59", "0"],
-                "420dbf735725e098": ["__tmp60", "0"],
-                "7a06c7a6d0c6e8d5": ["__tmp61", "0"],
-                "c970ce6044c63458": ["__tmp62", "0"],
-                "8d73ec68a40d5fe9": ["__tmp63", "0"],
-                "3ed1a695a9770bfc": ["__zero", "0"],
-                "316528ae2131cddd": ["__one", "1"]
-            },
-            "lists": { "07c2a9abc12fec2e": ["__testlist", [1, 2, 3, 4]] },
-            "broadcasts": { "broadcastec038e5a964af367": "__test" },
+            "name": "Sprite1",
+            "variables": {},
+            "lists": {},
+            "broadcasts": {},
             "blocks": {
-                "34a8890e4e81af43": {
+                "GT56/BC[lA%gB(1_UP,R": {
                     "opcode": "event_whenbroadcastreceived",
-                    "next": "SJL`nvu`7|AbY+){=X9f",
+                    "next": "cWG%}(gcV)2UZF]8~L!i",
                     "parent": null,
                     "inputs": {},
                     "fields": {
-                        "BROADCAST_OPTION": [
-                            "__test",
-                            "broadcastec038e5a964af367"
-                        ]
+                        "BROADCAST_OPTION": ["ye", "mln;xBxL)`ebhlP-@^s8"]
                     },
                     "shadow": false,
                     "topLevel": true,
-                    "x": 0,
-                    "y": 0
+                    "x": 101,
+                    "y": 213
                 },
-                "SJL`nvu`7|AbY+){=X9f": {
-                    "opcode": "control_if_else",
-                    "next": null,
-                    "parent": "34a8890e4e81af43",
-                    "inputs": {
-                        "SUBSTACK2": [2, "`A~_++PsbEoGrRT6oI|E"],
-                        "SUBSTACK": [2, "UB(s8^jL+PEujd/OK[!C"],
-                        "CONDITION": [2, "B?jN[]Vw`H*WH|6=*=s5"]
-                    },
-                    "fields": {},
-                    "shadow": false,
-                    "topLevel": false
-                },
-                "`A~_++PsbEoGrRT6oI|E": {
+                "N@|$,2D0B*QWuYb+.N-u": {
                     "opcode": "event_broadcastandwait",
                     "next": null,
-                    "parent": "SJL`nvu`7|AbY+){=X9f",
+                    "parent": null,
                     "inputs": {
                         "BROADCAST_INPUT": [
                             1,
-                            [11, "__ELSE", "A=g7B6e:xA3%,;wf@dA9"]
+                            [11, "ye", "mln;xBxL)`ebhlP-@^s8"]
                         ]
                     },
                     "fields": {},
                     "shadow": false,
-                    "topLevel": false
+                    "topLevel": true,
+                    "x": 208,
+                    "y": 385
                 },
-                "UB(s8^jL+PEujd/OK[!C": {
-                    "opcode": "event_broadcastandwait",
+                "cWG%}(gcV)2UZF]8~L!i": {
+                    "opcode": "control_wait",
                     "next": null,
-                    "parent": "SJL`nvu`7|AbY+){=X9f",
-                    "inputs": {
-                        "BROADCAST_INPUT": [
-                            1,
-                            [11, "__YES", "X;t=+J1]ony+]e^s_)S-"]
-                        ]
-                    },
-                    "fields": {},
-                    "shadow": false,
-                    "topLevel": false
-                },
-                "B?jN[]Vw`H*WH|6=*=s5": {
-                    "opcode": "operator_equals",
-                    "next": null,
-                    "parent": "SJL`nvu`7|AbY+){=X9f",
-                    "inputs": {
-                        "OPERAND1": [
-                            3,
-                            [
-                                12,
-                                "my variable",
-                                "`jEk@4|i[#Fk?(8x)AV.-my variable"
-                            ],
-                            [10, ""]
-                        ],
-                        "OPERAND2": [1, [10, "true"]]
-                    },
+                    "parent": "GT56/BC[lA%gB(1_UP,R",
+                    "inputs": { "DURATION": [1, [5, "1"]] },
                     "fields": {},
                     "shadow": false,
                     "topLevel": false
