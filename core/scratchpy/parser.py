@@ -84,7 +84,7 @@ class SPModuleParser:
             value = ast.literal_eval(expr)
             return value
         except ValueError as e:
-            self.throwError("Unsupported operation in constant expression")
+            self.throwError("Unsupported operation in constant expression", critical=False)
         except SyntaxError:
             self.throwError("Syntax Error", critical=False)
             return 0
@@ -188,6 +188,9 @@ class SPModuleParser:
 
             # remove block indentation from line
             _line = _line[len(_leadingWhitespace[0]):]
+
+            if _line.endswith(":"):
+                _line += " pass"
             
             try:
                 containerBody.append(ast.parse(_line).body[0])

@@ -105,6 +105,7 @@ class PyASTProcessor:
         for leftHandAssignment in node.targets:
             if type(leftHandAssignment) != ast.Name:
                 self.addError(f'Left-hand of assignment operator must be a name constant or list index')
+                return
             
             symbolName = leftHandAssignment.id
             symbolType = self.module.findSymbolType(symbolName)

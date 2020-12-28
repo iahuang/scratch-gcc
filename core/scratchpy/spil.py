@@ -44,6 +44,13 @@ Built-in Broadcasts:
 
     broadcast "__stack_grow":   - grow the stack by 1 element
         apd __stack __zero
+    
+    broadcast "__stack_push":   - push __tmp0 to the stack
+        set __stack __sp __tmp0             # set value at stack pointer to x
+        add __sp __one                      # add 1 to __sp
+        len __stack __tmp2                  # find size of stack
+        eq __tmp1 __sp __tmp2               # check if __sp == len(stack)
+        branch __tmp1 __stack_grow __nop    # grow stack if needed
 
 Instruction Set:
 
@@ -81,11 +88,8 @@ not dest        - boolean invert variable dest
     copy dest __tmp0
 
 push x          - push x onto __stack
-    set __stack __sp x                  # set value at stack pointer to x
-    add __sp __one                      # add 1 to __sp
-    len __stack __tmp2                  # find size of stack
-    eq __tmp1 __sp __tmp2               # check if __sp == len(stack)
-    branch __tmp1 __stack_grow __nop    # grow stack if needed
+    copy __tmp0 x
+    jump __stack_push
 
 pop dest        - pop off stack into dest
     sub __sp __one
@@ -438,11 +442,8 @@ class Push(PseudoInstruction):
     
     def expandsTo(self):
         return (
-            Set("__stack", "__sp", self.x),
-            Add("__sp", "__one"),
-            Len("__stack", "__tmp2"),
-            Eq("__tmp1", "__sp", "__tmp2"),
-            Branch("__tmp1", "__stack_grow", "__nop")
+            Copy("__tmp0", self.x),
+            Jump("__stack_push")
         )
 
 class Pop(PseudoInstruction):
@@ -531,6 +532,17 @@ class SPILProgram:
         b.body.append(Push("__tmp4"))
         self.broadcasts.append(b)
 
+        b = Broadcast("__stack_push")
+        for i in (
+            Set("__stack", "__sp", "__tmp0"),
+            Add("__sp", "__one"),
+            Len("__stack", "__tmp2"),
+            Eq("__tmp1", "__sp", "__tmp2"),
+            Branch("__tmp1", "__stack_grow", "__nop")
+        ):
+            b.body.append(i)
+        self.broadcasts.append(b)
+        
         b = Broadcast("__test2")
         b.body.append(Pop("__tmp4"))
         self.broadcasts.append(b)
@@ -570,11 +582,16 @@ class SPILProgram:
         for listName in self.lists:
             self.createList(listName)
 
+        row = 0
+        col = 0
+        rowSpacing = 1000
+        colSpacing = 500
+        maxCols = 5
 
         # compile
         for broadcast in self.broadcasts:
             # Create top leavel "on broadcast" block to put code after
-            broadcastBlock = self.target.createBlock([0, 0])
+            broadcastBlock = self.target.createBlock([col*colSpacing, row*rowSpacing])
             broadcastBlock.opcode = "event_whenbroadcastreceived"
             broadcastOpt = [broadcast.name,
                             self.getBroadcastId(broadcast.name)]
@@ -589,3 +606,8 @@ class SPILProgram:
                 for block in newBlocks:
                     chainBlocks(currentBlock, block)
                     currentBlock = block
+            
+            col+=1
+            if col>maxCols:
+                col = 0
+                row+=1

@@ -2,21 +2,10 @@ from core import scratch
 from core.scratchpy.parser import SPModuleParser
 from core.scratchpy.compiler2 import SPModuleCompiler
 parser = SPModuleParser()
-text = """
-var a = 0
-
-def main():
-    a = a*a+2
-
-def add(x,y):
-    return x+y
-
-# def add(a,b):
-#     return a+b
-"""
-
+with open("vm.sp") as fl:
+    text = fl.read()
 module = parser.parseText(text)
-print(module.functionBlocks[0].body)
+#print(module.functionBlocks[0].body)
 #print(module.functionBlocks[1].body)
 
 compiler = SPModuleCompiler(module)
