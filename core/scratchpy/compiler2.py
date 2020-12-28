@@ -85,6 +85,11 @@ class SPModuleCompiler:
     def compileReturnNode(self, node: SPReturn):
         exprVariable = self.compileExpression(node.value)
         retVariable = self.getReturnVariableName(self.context.enclosingFunction)
+        # before returning, pop args off stack
+        for arg in self.context.enclosingFunction.args[::-1]:
+            argVar = self.nameMangleArgument(arg.name, self.context.enclosingFunction)
+            self.addInstruction(spil.Pop(argVar))
+
         self.addInstruction(spil.Copy(retVariable, exprVariable))
     
     def nameMangleArgument(self, argName, function: SPFunctionDefinition):
@@ -110,6 +115,11 @@ class SPModuleCompiler:
             # make broadcast that represents function call
             bc = spil.Broadcast("_call_"+function.fname)
             self.context.currentBroadcast = bc
+
+            # push function args on stack
+
+            for arg in function.args:
+                self.addInstruction(spil.Push(self.nameMangleArgument(arg.name, function)))
 
             # compile function body into broadcast
 
