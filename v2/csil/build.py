@@ -1,3 +1,5 @@
+""" CSIL Compilation and Build Module """
+
 from . import Broadcast, CSILProgram
 from .parser import parseSource
 from .scratch import ScratchProject, randomId

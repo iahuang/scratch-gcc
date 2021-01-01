@@ -1,3 +1,5 @@
+""" Definition and Scratch implementations for CSIL's instruction set """
+
 from . import scratch
 from .block_builder import makeBlockInput, makeBroadcastInput, makeListField, makeReporterInput, makeValueInput, makeVariableField, makeVariableInput 
 

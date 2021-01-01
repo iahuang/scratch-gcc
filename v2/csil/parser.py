@@ -4,17 +4,6 @@ from typing import Type
 from . import Broadcast, CSILProgram
 from . import instructions
 
-SUPPORTED_REGISTERS = ["sp", "rv", "null", "fp", "ONE", "ZERO", "STACK_END"]
-
-for i in range(4): # reserved registers
-    SUPPORTED_REGISTERS.append("res"+str(i))
-
-for i in range(4): # argument registers
-    SUPPORTED_REGISTERS.append("arg"+str(i))
-
-for i in range(64): # general purpose registers
-    SUPPORTED_REGISTERS.append("tmp"+str(i))
-
 class CSILParseError(Exception): pass
 
 def _isCharEnclosed(charIndex, string):
@@ -62,6 +51,7 @@ def parseInstruction(line):
     args = parts[1:]
 
     # this bit uses a lot of weird trickery, don't look too much into it
+    # it's also the reason this file isn't several hundred lines long
     instructionType = instructions.registry.getInstructionClass(instruction)
 
     if not instructionType: raise CSILParseError(f'Unknown instruction "{instruction}"')
@@ -70,6 +60,7 @@ def parseInstruction(line):
         return instructionType(*args)
     except TypeError: # probably invalid num of arguments
         raise CSILParseError("Invalid number of arguments")
+    
 def parseSource(text):
     broadcasts = []
     lines = text.split("\n")

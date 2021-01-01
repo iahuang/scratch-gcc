@@ -1,11 +1,5 @@
 """
 A library for loading and manipluating Scratch project (sb3) files
-Basic usage:
-
-with scratch.ScratchProject.fromFile("project.sb3") as proj:
-    [do stuff here]
-
-    proj.saveToFile("output.sb3")
 """
 
 import zipfile

@@ -34,6 +34,7 @@ https://docs.google.com/document/d/1qnO-grzpq-OGZvvym4R8JGqC_dIo9-sqCrF-uoIeZIA
 █████████████████████████████████████████████
 █████████████████████████████████████████████
 """
+
 from . import scratch
 from .instructions import Instruction
 
