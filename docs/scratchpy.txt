@@ -1,0 +1,10 @@
+ScratchPy built-ins
+
+makeArray(n: number)
+tentothe(n: number)
+floor(n: number)
+log(n: number)
+cos(n: number)
+sin(n: number)
+tan(n: number)
+sqrt(n: number)

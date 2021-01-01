@@ -1,0 +1,20 @@
+# CSIL Header
+# See specification here:
+# https://docs.google.com/document/d/1qnO-grzpq-OGZvvym4R8JGqC_dIo9-sqCrF-uoIeZIA/edit?usp=sharing
+
+broadcast __stack_check:
+    lt res0 sp STACK_END
+    branch res0 __nop __err_sov
+
+broadcast __err_sov:
+    load err "error: stack overflow"
+    halt
+
+broadcast __nop:
+    nop
+
+broadcast __not0:
+    set res0 ZERO
+
+broadcast __not1:
+    set res0 ONE

@@ -116,7 +116,6 @@ class SPModule:
     def getLists(self):
         return list(self._lists.values())
 
-
     def addList(self, name, initialValue=None):
         self._lists[name] = SPList(name, initialValue)
     
@@ -296,6 +295,10 @@ class SPModuleParser:
         else:
             self.throwError(f'Unexpected symbol "{line.split(" ")[0]}"')
         
+        # Collect the contents of this container to be parsed later,
+        # once the rest of the top-level lines of this program
+        # have been parsed
+
         # ok now parse the subsequent indented lines (statements) into a code block
         # but actually increment the global line counter
         codeBlock = SPCodeBlock()
